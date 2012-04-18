@@ -18,6 +18,9 @@
 (c-define-type GLdouble double)
 (c-define-type GLclampd double)
 
+(define sizeof-GLfloat
+  (c-lambda () int
+            "___result = sizeof(GLfloat);"))
 
 (define make-GLuint*
   (c-lambda () (pointer GLuint)
@@ -887,6 +890,12 @@
 (define glBegin
   (c-lambda (GLenum) void "glBegin"))
 
+(define glBlendFunc
+  (c-lambda (GLenum GLenum) void "glBlendFunc"))
+
+(define glBindTexture
+  (c-lambda (GLenum GLint) void "glBindTexture"))
+
 (define glClear
   (c-lambda (GLbitfield) void "glClear"))
 
@@ -896,11 +905,25 @@
 (define glDeleteTextures
   (c-lambda (GLsizei (pointer GLuint)) void "glDeleteTextures"))
 
+(define glDrawElements
+  (c-lambda (GLenum GLsizei GLenum (pointer GLvoid))
+            void
+            "glDrawElements"))
+
 (define glEnable
   (c-lambda (GLenum) void "glEnable"))
 
+(define glEnableClientState
+  (c-lambda (GLenum) void "glEnableClientState"))
+
 (define glEnd
   (c-lambda () void "glEnd"))
+
+(define glDisable
+  (c-lambda (GLenum) void "glDisable"))
+
+(define glDisableClientState
+  (c-lambda (GLenum) void "glDisableClientState"))
 
 (define glGenTextures
   (c-lambda (GLsizei (pointer GLuint)) void "glGenTextures"))
@@ -917,6 +940,23 @@
 (define glOrtho
   (c-lambda (GLdouble GLdouble GLdouble GLdouble GLdouble GLdouble) void
             "glOrtho"))
+
+(define glPopMatrix
+  (c-lambda () void "glPopMatrix"))
+
+(define glPushMatrix
+  (c-lambda () void "glPushMatrix"))
+
+(define glTexParameteri
+  (c-lambda (GLenum GLenum GLint) void "glTexParameteri"))
+
+(define glTexParameterf
+  (c-lambda (GLenum GLenum GLfloat) void "glTexParameterf"))
+
+(define glTexImage2D
+  (c-lambda (GLenum GLint GLint GLsizei GLsizei GLint GLenum GLenum (pointer GLvoid))
+            void
+            "glTexImage2D"))
 
 (define glVertex3f
   (c-lambda (GLfloat GLfloat GLfloat) void "glVertex3f"))
