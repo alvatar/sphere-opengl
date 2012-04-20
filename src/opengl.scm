@@ -2,20 +2,30 @@
 
 (c-declare "#include \"gl.h\"")
 
-(c-define-type GLenum unsigned-int)	
+(c-define-type GLenum unsigned-int)
 (c-define-type GLboolean unsigned-char)
 (c-define-type GLbitfield unsigned-int)
 (c-define-type GLvoid void)
+(c-define-type GLvoid* (pointer void))
 (c-define-type GLbyte signed-char)
+(c-define-type GLbyte* (pointer GLbyte))
 (c-define-type GLshort short)
+(c-define-type GLshort* (pointer GLshort))
 (c-define-type GLint int)
+(c-define-type GLint* (pointer GLint))
 (c-define-type GLubyte unsigned-char)
+(c-define-type GLubyte* (pointer GLubyte))
 (c-define-type GLushort unsigned-short)
+(c-define-type GLushort* (pointer GLushort))
 (c-define-type GLuint unsigned-int)
+(c-define-type GLuint* (pointer GLuint))
 (c-define-type GLsizei int)
+(c-define-type GLsizei* (pointer GLsizei))
 (c-define-type GLfloat float)
+(c-define-type GLfloat* (pointer GLfloat))
 (c-define-type GLclampf float)
 (c-define-type GLdouble double)
+(c-define-type GLdouble* (pointer GLdouble))
 (c-define-type GLclampd double)
 
 (define sizeof-GLfloat
@@ -25,6 +35,62 @@
 (define make-GLuint*
   (c-lambda () (pointer GLuint)
     "___result_voidstar = ___EXT(___alloc_rc)(sizeof(GLuint));\n"))
+
+(define GLuint*-ref
+  (c-lambda (GLuint* size-t) GLuint
+            "___result = ((GLuint*)___arg1)[___arg2];"))
+
+;;; GLfloat array
+
+(define make-GLfloat*
+  (c-lambda (size-t) GLfloat*
+            "___result_voidstar = malloc(___arg1*sizeof(GLfloat));"))
+
+(define GLfloat*-ref
+  (c-lambda (GLfloat* size-t) GLfloat
+            "___result = ((GLfloat*)___arg1)[___arg2];"))
+
+(define GLfloat*-set!
+  (c-lambda (GLfloat* size-t GLfloat) void
+            "((GLfloat*)___arg1)[___arg2] = ___arg3;"))
+
+(define (vector->GLfloat* vec)
+  (let* ((length (vector-length vec))
+         (buf (make-GLfloat* length)))
+    (let loop ((i 0))
+      (if (< i length)
+          (begin
+            (GLfloat*-set! buf i (vector-ref vec i))
+            (loop (+ i 1)))
+          buf))))
+
+;;; GLushort array
+
+(define make-GLushort*
+  (c-lambda (size-t) GLushort*
+            "___result_voidstar = malloc(___arg1*sizeof(GLushort));"))
+
+(define GLushort*-ref
+  (c-lambda (GLushort* size-t) GLushort
+            "___result = ((GLushort*)___arg1)[___arg2];"))
+
+(define GLushort*-set!
+  (c-lambda (GLushort* size-t GLushort) void
+            "((GLushort*)___arg1)[___arg2] = ___arg3;"))
+
+(define (vector->GLushort* vec)
+  (let* ((length (vector-length vec))
+         (buf (make-GLushort* length)))
+    (let loop ((i 0))
+      (if (< i length)
+          (begin
+            (GLushort*-set! buf i (vector-ref vec i))
+            (loop (+ i 1)))
+          buf))))
+
+;; (define GLshort*->void*
+;;   (c-lambda (GLshort*) (pointer void)
+;;             "___result_voidstar = (void*)___arg1;"))
 
 ;; (define dereference-write-int*
 ;;   (c-lambda ((pointer int) int) void
@@ -902,6 +968,9 @@
 (define glClearColor
   (c-lambda (GLclampf GLclampf GLclampf GLclampf) void "glClearColor"))
 
+(define glColor3f
+  (c-lambda (GLfloat GLfloat GLfloat) void "glColor3f"))
+
 (define glDeleteTextures
   (c-lambda (GLsizei (pointer GLuint)) void "glDeleteTextures"))
 
@@ -958,8 +1027,14 @@
             void
             "glTexImage2D"))
 
+(define glTexCoordPointer
+  (c-lambda (GLint GLenum GLsizei GLvoid*) void "glTexCoordPointer"))
+
 (define glVertex3f
   (c-lambda (GLfloat GLfloat GLfloat) void "glVertex3f"))
+
+(define glVertexPointer
+  (c-lambda (GLint GLenum GLsizei GLvoid*) void "glVertexPointer"))
 
 (define glViewport
   (c-lambda (GLint GLint GLsizei GLsizei) void "glViewport"))
