@@ -33,8 +33,8 @@
             "___result = sizeof(GLfloat);"))
 
 (define make-GLuint*
-  (c-lambda () (pointer GLuint)
-    "___result_voidstar = ___EXT(___alloc_rc)(sizeof(GLuint));\n"))
+  (c-lambda (size-t) GLuint*
+    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLuint));\n"))
 
 (define GLuint*-ref
   (c-lambda (GLuint* size-t) GLuint
