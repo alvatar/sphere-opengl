@@ -28,9 +28,16 @@
 (c-define-type GLdouble* (pointer GLdouble))
 (c-define-type GLclampd double)
 
-(define sizeof-GLfloat
-  (c-lambda () int
-            "___result = sizeof(GLfloat);"))
+(c-build-sizeof GLbyte)
+(c-build-sizeof GLshort)
+(c-build-sizeof GLint)
+(c-build-sizeof GLbyte)
+(c-build-sizeof GLubyte)
+(c-build-sizeof GLushort)
+(c-build-sizeof GLuint)
+(c-build-sizeof GLsizei)
+(c-build-sizeof GLfloat)
+(c-build-sizeof GLdouble)
 
 (define make-GLuint*
   (c-lambda (size-t) GLuint*
