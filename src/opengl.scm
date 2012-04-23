@@ -1,5 +1,3 @@
-(%include base: ffi#)
-
 (c-declare "#include \"gl.h\"")
 
 (c-define-type GLenum unsigned-int)

@@ -6,6 +6,10 @@ while [ -h "$SOURCE" ] ; do SOURCE="$(readlink "$SOURCE")"; done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
 cd $DIR/..
+if [[ ! -z `ls lib/*.o[0-9] 2> /dev/null` ]]; then rm lib/*.o[0-9]; fi
+gsc -e '(begin (include "/data/projects/scheme-prelude/src/prelude.scm")
+(compile-file "module.scm" output: "opengl.o1" cc-options: "-w -I/usr/include/GL" ld-options: "-lGL")
+)'
 
-if [[ ! -z `ls src/*.o[0-9] 2> /dev/null` ]]; then rm src/*.o[0-9]; fi
-gsc -e '(begin (include "/data/projects/scheme-prelude/src/prelude.scm") (include "compiler.scm"))'
+if [[ ! -d lib ]]; then mkdir lib; fi
+mv *.o[0-9] lib/
