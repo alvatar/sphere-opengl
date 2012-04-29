@@ -10,12 +10,10 @@
   (delete-file lib-directory))
 
 (define-task compile (init)
-  (gambit-eval
-    ;(compile-file "module.scm" output: "opengl.o1" cc-options: "-w -I/usr/include/GL" ld-options: "-lGL")
-    "
-    (begin
-     (include \"~~prelude/prelude#.scm\")
-     (compile-file \"module.scm\" output: \"build/opengl.o1\" cc-options: \"-w -I/usr/include/GL\" ld-options: \"-lGL\"))"))
+  (gambit-eval-here
+   '(begin
+      (include "~~prelude/prelude#.scm")
+      (compile-file "module.scm" output: "build/opengl.o1" cc-options: "-w -I/usr/include/GL" ld-options: "-lGL"))))
 
 (define-task install (compile)
   (make-directory lib-directory)
