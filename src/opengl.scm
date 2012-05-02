@@ -1,4 +1,5 @@
 (c-declare "#include \"gl.h\"")
+(c-declare "#include \"stdlib.h\"")
 
 (c-define-type GLenum unsigned-int)
 (c-define-type GLboolean unsigned-char)
