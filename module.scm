@@ -1,2 +1,6 @@
 (%include base: ffi#)
-(include "src/opengl.scm")
+(cond-expand
+ (arm
+  (%include gl-es))
+ (x86
+  (%include gl)))
