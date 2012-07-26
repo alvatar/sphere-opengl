@@ -14,7 +14,7 @@
 (define-task gl (init)
   (gambit-eval-here
    `(begin
-      (include "~~prelude/prelude#.scm")
+      (include "~~base/prelude#.scm")
       (define-cond-expand-feature x86)
       (compile-file "module.scm"
                     output: ,(string-append (current-build-directory) gl-name lib-suffix)
@@ -24,7 +24,7 @@
 (define-task gl-es (init)
   (gambit-eval-here
    `(begin
-      (include "~~prelude/prelude#.scm")
+      (include "~~base/prelude#.scm")
       (define-cond-expand-feature arm)
       (compile-file-to-target
        "module.scm"
