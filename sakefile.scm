@@ -1,43 +1,50 @@
-(define lib-directory "lib/")
-(define gl-name "gl")
-(define gl-es-name "gl-es")
-(define lib-suffix ".o1")
-(define c-suffix ".c")
+(include "~~spheres/prelude#.scm")
+(%include sake: utils#)
 
-(define-task init ()
-  (make-directory (current-build-directory)))
+(define gl-es-modules '(gl-es))
+(define gl-modules '(gl))
 
-(define-task clean (init)
-  (delete-file (current-build-directory))
-  (delete-file lib-directory))
+(define-task clean ()
+  (sake:default-clean))
 
-(define-task gl (init)
-  (gambit-eval-here
-   `(begin
-      (include "~~base/prelude#.scm")
-      (define-cond-expand-feature x86)
-      (compile-file "module.scm"
-                    output: ,(string-append (current-build-directory) gl-name lib-suffix)
-                    cc-options: "-w -I/usr/include/GL"
-                    ld-options: "-lGL"))))
+(define-task compile ()
+  ;; GL ES
+  (for-each (lambda (m)
+              (sake:generate-c-file m include: '((base: ffi)))
+              (sake:generate-c-file m
+                                    version: '(debug)
+                                    include: '((base: ffi))
+                                    compiler-options: '(debug)))
+            gl-es-modules)
+  ;; GL
+  (let ((cc-options "-w -I/usr/include/GL")
+        (ld-options "-lGL"))
+    (for-each (lambda (m)
+                (sake:compile-c-file (sake:generate-c-file m include: '((base: ffi)))
+                                     cc-options: cc-options
+                                     ld-options: ld-options)
+                (sake:compile-c-file (sake:generate-c-file
+                                      m
+                                      version: '(debug)
+                                      include: '((base: ffi))
+                                      compiler-options: '(debug))
+                                     cc-options: cc-options
+                                     ld-options: ld-options))
+              gl-modules)))
 
-(define-task gl-es (init)
-  (gambit-eval-here
-   `(begin
-      (include "~~base/prelude#.scm")
-      (define-cond-expand-feature arm)
-      (compile-file-to-target
-       "module.scm"
-       output: ,(string-append (current-build-directory) "gl-es" c-suffix)))))
+(define-task install ()
+  (for-each (lambda (m)
+              (sake:install-compiled-module m omit-o: #t)
+              (sake:install-compiled-module m version: '(debug) omit-o: #t))
+            gl-es-modules)
+  (for-each (lambda (m)
+              (sake:install-compiled-module m omit-c: #t)
+              (sake:install-compiled-module m version: '(debug)))
+            gl-modules)
+  (sake:install-system-sphere))
 
-(define-task install (gl gl-es)
-  (make-directory lib-directory)
-  (delete-file (string-append lib-directory gl-name lib-suffix))
-  (delete-file (string-append lib-directory gl-es-name c-suffix))
-  (copy-file (string-append (current-build-directory) gl-name lib-suffix)
-             (string-append lib-directory gl-name lib-suffix))
-  (copy-file (string-append (current-build-directory) gl-es-name c-suffix)
-             (string-append lib-directory gl-es-name c-suffix)))
+(define-task uninstall ()
+  (sake:uninstall-system-sphere))
 
-(define-task all (gl gl-es install)
-  '(compile and install))
+(define-task all (compile install)
+  'all)
