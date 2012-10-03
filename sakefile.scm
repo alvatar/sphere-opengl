@@ -10,17 +10,18 @@
 (define-task compile ()
   ;; GL ES
   (for-each (lambda (m)
-              (sake:generate-c-file m include: '((base: ffi)))
-              (sake:generate-c-file m
-                                    version: '(debug)
-                                    include: '((base: ffi))
-                                    compiler-options: '(debug)))
+              (let ((include '((base: ffi#))))
+                (sake:generate-c-file m include: include)
+                (sake:generate-c-file m
+                                      version: '(debug)
+                                      include: include
+                                      compiler-options: '(debug))))
             gl-es-modules)
   ;; GL
   (let ((cc-options "-w -I/usr/include/GL")
         (ld-options "-lGL"))
     (for-each (lambda (m)
-                (sake:compile-c-file (sake:generate-c-file m include: '((base: ffi)))
+                (sake:compile-c-file (sake:generate-c-file m include: '((base: ffi#)) verbose: #t)
                                      cc-options: cc-options
                                      ld-options: ld-options)
                 (sake:compile-c-file (sake:generate-c-file
