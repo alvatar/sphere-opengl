@@ -4,7 +4,7 @@
          (base: ffi#))
         (load
          (base: ffi)))
- ((opengl: gl-es version: (debug))
+ ((= gl-es version: (debug))
   (include
    (base: ffi# version: (debug)))
   (load
@@ -13,7 +13,7 @@
       (base: ffi#))
      (load
       (base: ffi)))
- ((opengl: gl version: (debug))
+ ((= gl version: (debug))
   (include
    (base: ffi# version: (debug)))
   (load

@@ -1,6 +1,3 @@
-(include "~~spheres/prelude#.scm")
-(%include sake: utils#)
-
 (define gl-es-modules '(gl-es))
 (define gl-modules '(gl))
 
@@ -10,24 +7,21 @@
 (define-task compile ()
   ;; GL ES
   (for-each (lambda (m)
-              (let ((include '((base: ffi#))))
-                (sake:compile-to-c m include: include)
-                (sake:compile-to-c m
-                                   version: '(debug)
-                                   include: include
-                                   compiler-options: '(debug))))
+              (sake:compile-to-c m)
+              (sake:compile-to-c m
+                                 version: '(debug)
+                                 compiler-options: '(debug)))
             gl-es-modules)
   ;; GL
   (let ((cc-options "-w -I/usr/include/GL")
         (ld-options "-lGL"))
     (for-each (lambda (m)
-                (sake:compile-c-to-o (sake:compile-to-c m include: '((base: ffi#)) verbose: #t)
+                (sake:compile-c-to-o (sake:compile-to-c m)
                                      cc-options: cc-options
                                      ld-options: ld-options)
                 (sake:compile-c-to-o (sake:compile-to-c
                                       m
                                       version: '(debug)
-                                      include: '((base: ffi))
                                       compiler-options: '(debug))
                                      cc-options: cc-options
                                      ld-options: ld-options))
