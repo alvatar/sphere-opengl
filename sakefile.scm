@@ -1,4 +1,4 @@
-(define gl-es-modules '(gl-es))
+(define gl-es-modules '(gl-es gl-es-ext))
 (define gl-modules '(gl))
 
 (define-task clean ()

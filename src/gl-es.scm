@@ -1,5 +1,4 @@
 (c-declare "#include \"GLES/gl.h\"")
-;(c-declare "#include \"stdlib.h\"")
 
 (c-define-type GLenum unsigned-int)
 (c-define-type GLboolean unsigned-char)
@@ -376,7 +375,7 @@ GL_TEXTURE
 ;; PixelFormat
 GL_ALPHA          
 GL_RGB            
-GL_RGBA           
+GL_RGBA
 GL_LUMINANCE      
 GL_LUMINANCE_ALPHA
 
@@ -600,6 +599,9 @@ GL_DOT3_RGBA
 
 (define glTexCoordPointer
   (c-lambda (GLint GLenum GLsizei GLvoid*) void "glTexCoordPointer"))
+
+(define glTexSubImage2D
+  (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLenum GLvoid*) void "glTexSubImage2D"))
 
 (define glVertexPointer
   (c-lambda (GLint GLenum GLsizei GLvoid*) void "glVertexPointer"))

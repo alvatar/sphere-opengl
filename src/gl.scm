@@ -1,5 +1,4 @@
 (c-declare "#include \"gl.h\"")
-;(c-declare "#include \"stdlib.h\"")
 
 (c-define-type GLenum unsigned-int)
 (c-define-type GLboolean unsigned-char)
@@ -1035,6 +1034,9 @@
 
 (define glTexCoordPointer
   (c-lambda (GLint GLenum GLsizei GLvoid*) void "glTexCoordPointer"))
+
+(define glTexSubImage2D
+  (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLenum GLvoid*) void "glTexSubImage2D"))
 
 (define glVertex3f
   (c-lambda (GLfloat GLfloat GLfloat) void "glVertex3f"))
