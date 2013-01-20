@@ -36,10 +36,10 @@
               (sake:install-compiled-module m omit-c: #t)
               (sake:install-compiled-module m version: '(debug)))
             gl-modules)
-  (sake:install-system-sphere))
+  (sake:install-sphere-to-system))
 
 (define-task uninstall ()
-  (sake:uninstall-system-sphere))
+  (sake:uninstall-sphere-from-system))
 
 (define-task all (compile install)
   'all)
