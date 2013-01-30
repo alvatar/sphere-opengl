@@ -8,9 +8,7 @@
   ;; GL ES
   (for-each (lambda (m)
               (sake:compile-to-c m)
-              (sake:compile-to-c m
-                                 version: '(debug)
-                                 compiler-options: '(debug)))
+              (sake:compile-to-c m compiler-options: '(debug)))
             gl-es-modules)
   ;; GL
   (let ((cc-options "-w -I/usr/include/GL")
@@ -19,23 +17,14 @@
                 (sake:compile-c-to-o (sake:compile-to-c m)
                                      cc-options: cc-options
                                      ld-options: ld-options)
-                (sake:compile-c-to-o (sake:compile-to-c
-                                      m
-                                      version: '(debug)
-                                      compiler-options: '(debug))
+                (sake:compile-c-to-o (sake:compile-to-c m compiler-options: '(debug))
                                      cc-options: cc-options
                                      ld-options: ld-options))
               gl-modules)))
 
 (define-task install ()
-  (for-each (lambda (m)
-              (sake:install-compiled-module m omit-o: #t)
-              (sake:install-compiled-module m version: '(debug) omit-o: #t))
-            gl-es-modules)
-  (for-each (lambda (m)
-              (sake:install-compiled-module m omit-c: #t)
-              (sake:install-compiled-module m version: '(debug)))
-            gl-modules)
+  (for-each (lambda (m) (sake:install-compiled-module m omit-o: #t versions: '(() (debug)))) gl-es-modules)
+  (for-each (lambda (m) (sake:install-compiled-module m versions: '(() (debug)))) gl-modules)
   (sake:install-sphere-to-system))
 
 (define-task uninstall ()
