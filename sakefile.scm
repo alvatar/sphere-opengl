@@ -12,7 +12,7 @@
             gl-es-modules)
   ;; GL
   (let ((cc-options "-w -I/usr/include/GL")
-        (ld-options "-lGL"))
+        (ld-options "-lGL -lGLEW"))
     (for-each (lambda (m)
                 (sake:compile-c-to-o (sake:compile-to-c m)
                                      cc-options: cc-options

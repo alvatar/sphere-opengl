@@ -1,7 +1,8 @@
+(c-declare "#include \"glew.h\"")
 (c-declare "#include \"gl.h\"")
 
 (c-define-type GLenum unsigned-int)
-(c-define-type GLboolean unsigned-char)
+(c-define-type GLboolean bool)
 (c-define-type GLbitfield unsigned-int)
 (c-define-type GLvoid void)
 (c-define-type GLvoid* (pointer void))
@@ -37,40 +38,29 @@
 (c-build-sizeof GLfloat)
 (c-build-sizeof GLdouble)
 
-(define make-GLuint*
-  (c-lambda (size-t) GLuint*
-    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLuint));\n"))
+;;! GLint
+(define make-GLint*
+  (c-lambda (size-t) GLint*
+    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLint));"))
 
+(define *->GLint
+  (c-lambda (GLint*) GLint
+            "___result = *___arg1;"))
+
+;;! GLuint
 (define GLuint*-ref
   (c-lambda (GLuint* size-t) GLuint
             "___result = ((GLuint*)___arg1)[___arg2];"))
 
-;;; GLfloat array
+(define *->GLuint
+  (c-lambda (GLuint*) GLuint
+            "___result = *___arg1;"))
 
-(define make-GLfloat*
-  (c-lambda (size-t) GLfloat*
-            "___result_voidstar = malloc(___arg1*sizeof(GLfloat));"))
+(define make-GLuint*
+  (c-lambda (size-t) GLuint*
+    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLuint));"))
 
-(define GLfloat*-ref
-  (c-lambda (GLfloat* size-t) GLfloat
-            "___result = ((GLfloat*)___arg1)[___arg2];"))
-
-(define GLfloat*-set!
-  (c-lambda (GLfloat* size-t GLfloat) void
-            "((GLfloat*)___arg1)[___arg2] = ___arg3;"))
-
-(define (vector->GLfloat* vec)
-  (let* ((length (vector-length vec))
-         (buf (make-GLfloat* length)))
-    (let loop ((i 0))
-      (if (< i length)
-          (begin
-            (GLfloat*-set! buf i (vector-ref vec i))
-            (loop (+ i 1)))
-          buf))))
-
-;;; GLushort array
-
+;;! GLushort array
 (define make-GLushort*
   (c-lambda (size-t) GLushort*
             "___result_voidstar = malloc(___arg1*sizeof(GLushort));"))
@@ -90,6 +80,29 @@
       (if (< i length)
           (begin
             (GLushort*-set! buf i (vector-ref vec i))
+            (loop (+ i 1)))
+          buf))))
+
+;;! GLfloat
+(define make-GLfloat*
+  (c-lambda (size-t) GLfloat*
+            "___result_voidstar = malloc(___arg1*sizeof(GLfloat));"))
+
+(define GLfloat*-ref
+  (c-lambda (GLfloat* size-t) GLfloat
+            "___result = ((GLfloat*)___arg1)[___arg2];"))
+
+(define GLfloat*-set!
+  (c-lambda (GLfloat* size-t GLfloat) void
+            "((GLfloat*)___arg1)[___arg2] = ___arg3;"))
+
+(define (vector->GLfloat* vec)
+  (let* ((length (vector-length vec))
+         (buf (make-GLfloat* length)))
+    (let loop ((i 0))
+      (if (< i length)
+          (begin
+            (GLfloat*-set! buf i (vector-ref vec i))
             (loop (+ i 1)))
           buf))))
 
@@ -699,8 +712,8 @@
  GL_RGBA16		  
  GL_CLIENT_PIXEL_STORE_BIT 
  GL_CLIENT_VERTEX_ARRAY_BIT
- GL_ALL_CLIENT_ATTRIB_BITS 
- GL_CLIENT_ALL_ATTRIB_BITS 
+ ;; GL_ALL_CLIENT_ATTRIB_BITS 
+ ;; GL_CLIENT_ALL_ATTRIB_BITS 
 
  ;; OpenGL 1.2
  GL_RESCALE_NORMAL		
@@ -958,6 +971,49 @@
  GL_MAX_TEXTURE_UNITS_ARB)
 
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; GLEW
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(c-define-type GLchar char)
+(c-define-type GLchar* (pointer GLchar))
+(c-define-type GLchar** nonnull-char-string-list)
+
+;; ;; Defined as __int64 in glew
+(c-define-type GLintptr unsigned-int)
+(c-define-type GLsizeiptr unsigned-int)
+(c-define-type GLintptrARB unsigned-int)
+(c-define-type GLsizeiptrARB unsigned-int)
+
+;;! GLchar
+(define make-GLchar*
+  (c-lambda (size-t) GLchar*
+    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLchar));"))
+
+(define *->GLchar
+  (c-lambda (GLchar*) GLchar
+            "___result = *___arg1;"))
+
+;; TODO!
+(c-constants
+ GL_ARRAY_BUFFER
+ GL_STATIC_DRAW
+ GL_VERTEX_SHADER
+ GL_FRAGMENT_SHADER
+ GL_COMPILE_STATUS
+ GL_LINK_STATUS
+ GL_INFO_LOG_LENGTH)
+
+(define glewInit
+  (c-lambda () GLenum "glewInit"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define glAttachShader
+  (c-lambda (GLuint GLuint) void "glAttachShader"))
+
 (define glBegin
   (c-lambda (GLenum) void "glBegin"))
 
@@ -965,7 +1021,16 @@
   (c-lambda (GLenum GLenum) void "glBlendFunc"))
 
 (define glBindTexture
-  (c-lambda (GLenum GLint) void "glBindTexture"))
+  (c-lambda (GLenum GLuint) void "glBindTexture"))
+
+(define glBindBuffer
+  (c-lambda (GLenum GLuint) void "glBindBuffer"))
+
+(define glBindVertexArray
+  (c-lambda (GLuint) void "glBindVertexArray"))
+
+(define glBufferData
+  (c-lambda (GLenum GLsizeiptr GLvoid* GLenum) void "glBufferData"))
 
 (define glClear
   (c-lambda (GLbitfield) void "glClear"))
@@ -976,8 +1041,35 @@
 (define glColor3f
   (c-lambda (GLfloat GLfloat GLfloat) void "glColor3f"))
 
+(define glCompileShader
+  (c-lambda (GLuint) void "glCompileShader"))
+
+(define glCreateProgram
+  (c-lambda () GLuint "glCreateProgram"))
+
+(define glCreateShader
+  (c-lambda (GLenum) GLuint "glCreateShader"))
+
+(define glDeleteShader
+  (c-lambda (GLuint) void "glDeleteShader"))
+
 (define glDeleteTextures
   (c-lambda (GLsizei (pointer GLuint)) void "glDeleteTextures"))
+
+(define glDetachShader
+  (c-lambda (GLuint GLuint) void "glDetachShader"))
+
+(define glDisable
+  (c-lambda (GLenum) void "glDisable"))
+
+(define glDisableClientState
+  (c-lambda (GLenum) void "glDisableClientState"))
+
+(define glDisableVertexAttribArray
+  (c-lambda (GLenum) void "glDisableVertexAttribArray"))
+
+(define glDrawArrays
+  (c-lambda (GLenum GLint GLsizei) void "glDrawArrays"))
 
 (define glDrawElements
   (c-lambda (GLenum GLsizei GLenum (pointer GLvoid))
@@ -990,20 +1082,35 @@
 (define glEnableClientState
   (c-lambda (GLenum) void "glEnableClientState"))
 
+(define glEnableVertexAttribArray
+  (c-lambda (GLuint) void "glEnableVertexAttribArray"))
+
 (define glEnd
   (c-lambda () void "glEnd"))
 
-(define glDisable
-  (c-lambda (GLenum) void "glDisable"))
-
-(define glDisableClientState
-  (c-lambda (GLenum) void "glDisableClientState"))
+(define glGenBuffers
+  (c-lambda (GLsizei (pointer GLuint)) void "glGenBuffers"))
 
 (define glGenTextures
   (c-lambda (GLsizei (pointer GLuint)) void "glGenTextures"))
 
+(define glGenVertexArrays
+  (c-lambda (GLsizei (pointer GLuint)) void "glGenVertexArrays"))
+
+(define glGetProgramiv
+  (c-lambda (GLuint GLenum GLint*) void "glGetProgramiv"))
+
+(define glGetShaderiv
+  (c-lambda (GLuint GLenum GLint*) void "glGetShaderiv"))
+
+(define glGetShaderInfoLog
+  (c-lambda (GLuint GLsizei GLsizei* GLchar*) void "glGetShaderInfoLog"))
+
 (define glGetString
-  (c-lambda (GLenum) char-string "glGetString"))
+  (c-lambda (GLenum) GLubyte* "glGetString"))
+
+(define glLinkProgram
+  (c-lambda (GLuint) void "glLinkProgram"))
 
 (define glLoadIdentity
   (c-lambda () void "glLoadIdentity"))
@@ -1021,6 +1128,12 @@
 (define glPushMatrix
   (c-lambda () void "glPushMatrix"))
 
+(define glScissor
+  (c-lambda (GLint GLint GLsizei GLsizei) void "glScissor"))
+
+(define glShaderSource
+  (c-lambda (GLuint GLsizei GLchar** GLint*) void "glShaderSource"))
+
 (define glTexParameteri
   (c-lambda (GLenum GLenum GLint) void "glTexParameteri"))
 
@@ -1032,17 +1145,25 @@
             void
             "glTexImage2D"))
 
+;; OpenGL 2
 (define glTexCoordPointer
   (c-lambda (GLint GLenum GLsizei GLvoid*) void "glTexCoordPointer"))
 
 (define glTexSubImage2D
   (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLenum GLvoid*) void "glTexSubImage2D"))
 
+(define glUseProgram
+  (c-lambda (GLuint) void "glUseProgram"))
+
 (define glVertex3f
   (c-lambda (GLfloat GLfloat GLfloat) void "glVertex3f"))
 
+;; OpenGL 2
 (define glVertexPointer
   (c-lambda (GLint GLenum GLsizei GLvoid*) void "glVertexPointer"))
+
+(define glVertexAttribPointer
+  (c-lambda (GLuint GLint GLenum GLboolean GLsizei GLvoid*) void "glVertexAttribPointer"))
 
 (define glViewport
   (c-lambda (GLint GLint GLsizei GLsizei) void "glViewport"))
