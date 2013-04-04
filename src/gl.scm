@@ -106,6 +106,30 @@
             (loop (+ i 1)))
           buf))))
 
+;; Defined in terms of vector-based matrices. No checks are performed
+(define (matrix->GLfloat* mat)
+  (let* ((rows (vector-length mat))
+         (columns (vector-length (vector-ref mat 0)))
+         (max-i (fx- rows 1))
+         (max-j (fx- columns 1))
+         (buf-size (fx* rows columns))
+         (buf (make-GLfloat* buf-size)))
+    (let loop ((i 0)
+               (i-offset 0)
+               (j 0))
+      (GLfloat*-set! buf
+                     (fx+ i-offset j)
+                     (vector-ref (vector-ref mat i) j))
+      (if (< j max-j)
+          (loop i
+                i-offset
+                (fx+ 1 j))
+          (if (< i max-i)
+              (loop (fx+ 1 i)
+                    (fx+ i-offset columns)
+                    j)
+              buf)))))
+
 ;; (define GLshort*->void*
 ;;   (c-lambda (GLshort*) (pointer void)
 ;;             "___result_voidstar = (void*)___arg1;"))
@@ -1002,7 +1026,8 @@
  GL_FRAGMENT_SHADER
  GL_COMPILE_STATUS
  GL_LINK_STATUS
- GL_INFO_LOG_LENGTH)
+ GL_INFO_LOG_LENGTH
+ GL_TEXTURE0)
 
 (define glewInit
   (c-lambda () GLenum "glewInit"))
@@ -1010,6 +1035,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(define glActiveTexture
+  (c-lambda (GLenum) void "glActiveTexture"))
 
 (define glAttachShader
   (c-lambda (GLuint GLuint) void "glAttachShader"))
@@ -1025,6 +1053,9 @@
 
 (define glBindBuffer
   (c-lambda (GLenum GLuint) void "glBindBuffer"))
+
+(define glBindSampler
+  (c-lambda (GLuint GLuint) void "glBindSampler"))
 
 (define glBindVertexArray
   (c-lambda (GLuint) void "glBindVertexArray"))
@@ -1100,6 +1131,9 @@
 (define glGetProgramiv
   (c-lambda (GLuint GLenum GLint*) void "glGetProgramiv"))
 
+(define glGenSamplers
+  (c-lambda (GLsizei GLuint*) void "glGenSamplers"))
+
 (define glGetShaderiv
   (c-lambda (GLuint GLenum GLint*) void "glGetShaderiv"))
 
@@ -1108,6 +1142,9 @@
 
 (define glGetString
   (c-lambda (GLenum) GLubyte* "glGetString"))
+
+(define glGetUniformLocation
+  (c-lambda (GLuint char-string) GLint "glGetUniformLocation"))
 
 (define glLinkProgram
   (c-lambda (GLuint) void "glLinkProgram"))
@@ -1127,6 +1164,12 @@
 
 (define glPushMatrix
   (c-lambda () void "glPushMatrix"))
+
+(define glSamplerParameterf
+  (c-lambda (GLuint GLenum GLfloat) void "glSamplerParameterf"))
+
+(define glSamplerParameteri
+  (c-lambda (GLuint GLenum GLint) void "glSamplerParameteri"))
 
 (define glScissor
   (c-lambda (GLint GLint GLsizei GLsizei) void "glScissor"))
@@ -1154,6 +1197,12 @@
 
 (define glUseProgram
   (c-lambda (GLuint) void "glUseProgram"))
+
+(define glUniform1i
+  (c-lambda (GLint GLint) void "glUniform1i"))
+
+(define glUniformMatrix4fv
+  (c-lambda (GLint GLsizei GLboolean GLfloat*) void "glUniformMatrix4fv"))
 
 (define glVertex3f
   (c-lambda (GLfloat GLfloat GLfloat) void "glVertex3f"))
