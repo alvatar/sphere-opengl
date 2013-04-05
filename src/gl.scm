@@ -127,8 +127,17 @@
           (if (< i max-i)
               (loop (fx+ 1 i)
                     (fx+ i-offset columns)
-                    j)
+                    0)
               buf)))))
+
+(define print-GLfloats*
+  (c-lambda (GLfloat* int) void "
+int i;
+for(i=0; i<___arg2; i++)
+{
+  printf(\"GLfloat[%i]: %f\\n\", i, ___arg1[i]);
+}
+"))
 
 ;; (define GLshort*->void*
 ;;   (c-lambda (GLshort*) (pointer void)
