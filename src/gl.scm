@@ -139,18 +139,6 @@ for(i=0; i<___arg2; i++)
 }
 "))
 
-;; (define GLshort*->void*
-;;   (c-lambda (GLshort*) (pointer void)
-;;             "___result_voidstar = (void*)___arg1;"))
-
-;; (define dereference-write-int*
-;;   (c-lambda ((pointer int) int) void
-;;     "*(int*)___arg1_voidstar = ___arg2;"))
-
-;; (define dereference-read-int*
-;;   (c-lambda ((pointer int)) int
-;;     "___result = *(int*)___arg1_voidstar;"))
-
 
 (c-constants
  ;; Boolean values
