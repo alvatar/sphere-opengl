@@ -41,7 +41,9 @@
 ;;! GLint
 (define make-GLint*
   (c-lambda (size-t) GLint*
-    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLint));"))
+            ;;"___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLint));"
+            "___result_voidstar = malloc(___arg1*sizeof(GLint));"
+            ))
 
 (define *->GLint
   (c-lambda (GLint*) GLint
@@ -58,7 +60,9 @@
 
 (define make-GLuint*
   (c-lambda (size-t) GLuint*
-    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLuint));"))
+            ;;"___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLuint));"
+            "___result_voidstar = malloc(___arg1*sizeof(GLuint));"
+            ))
 
 ;;! GLushort array
 (define make-GLushort*
@@ -1009,7 +1013,8 @@ for(i=0; i<___arg2; i++)
 ;;! GLchar
 (define make-GLchar*
   (c-lambda (size-t) GLchar*
-    "___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLchar));"))
+    ;;"___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLchar));"
+            "___result_voidstar = malloc(___arg1*sizeof(GLchar));"))
 
 (define *->GLchar
   (c-lambda (GLchar*) GLchar
