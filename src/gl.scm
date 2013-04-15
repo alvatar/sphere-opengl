@@ -27,16 +27,16 @@
 (c-define-type GLdouble* (pointer GLdouble))
 (c-define-type GLclampd double)
 
-(c-build-sizeof GLbyte)
-(c-build-sizeof GLshort)
-(c-build-sizeof GLint)
-(c-build-sizeof GLbyte)
-(c-build-sizeof GLubyte)
-(c-build-sizeof GLushort)
-(c-build-sizeof GLuint)
-(c-build-sizeof GLsizei)
-(c-build-sizeof GLfloat)
-(c-build-sizeof GLdouble)
+(c-sizeof GLbyte "GLbyte")
+(c-sizeof GLshort "GLshort")
+(c-sizeof GLint "GLint")
+(c-sizeof GLbyte "GLbyte")
+(c-sizeof GLubyte "GLubyte")
+(c-sizeof GLushort "GLushort")
+(c-sizeof GLuint "GLuint")
+(c-sizeof GLsizei "GLsizei")
+(c-sizeof GLfloat "GLfloat")
+(c-sizeof GLdouble "GLdouble")
 
 ;;! GLint
 (define make-GLint*
@@ -73,13 +73,13 @@
   (c-lambda (GLushort* size-t GLushort) void
             "((GLushort*)___arg1)[___arg2] = ___arg3;"))
 
-(define (vector->GLushort* vec)
-  (let* ((length (vector-length vec))
+(define (u16vector->GLushort* vec)
+  (let* ((length (u16vector-length vec))
          (buf (make-GLushort* length)))
     (let loop ((i 0))
       (if (< i length)
           (begin
-            (GLushort*-set! buf i (vector-ref vec i))
+            (GLushort*-set! buf i (u16vector-ref vec i))
             (loop (+ i 1)))
           buf))))
 
@@ -96,13 +96,13 @@
   (c-lambda (GLfloat* size-t GLfloat) void
             "((GLfloat*)___arg1)[___arg2] = ___arg3;"))
 
-(define (vector->GLfloat* vec)
-  (let* ((length (vector-length vec))
+(define (f32vector->GLfloat* vec)
+  (let* ((length (f32vector-length vec))
          (buf (make-GLfloat* length)))
     (let loop ((i 0))
       (if (< i length)
           (begin
-            (GLfloat*-set! buf i (vector-ref vec i))
+            (GLfloat*-set! buf i (f32vector-ref vec i))
             (loop (+ i 1)))
           buf))))
 
