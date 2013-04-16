@@ -1005,10 +1005,10 @@ for(i=0; i<___arg2; i++)
 (c-define-type GLchar** nonnull-char-string-list)
 
 ;; ;; Defined as __int64 in glew
-(c-define-type GLintptr unsigned-int)
-(c-define-type GLsizeiptr unsigned-int)
-(c-define-type GLintptrARB unsigned-int)
-(c-define-type GLsizeiptrARB unsigned-int)
+(c-define-type GLintptr unsigned-long-long)
+(c-define-type GLsizeiptr unsigned-long-long)
+(c-define-type GLintptrARB unsigned-long-long)
+(c-define-type GLsizeiptrARB unsigned-long-long)
 
 ;;! GLchar
 (define make-GLchar*
@@ -1043,6 +1043,9 @@ for(i=0; i<___arg2; i++)
 
 (define glAttachShader
   (c-lambda (GLuint GLuint) void "glAttachShader"))
+
+(define glGetAttribLocation
+  (c-lambda (GLuint char-string) GLuint "glGetAttribLocation"))
 
 (define glBegin
   (c-lambda (GLenum) void "glBegin"))
