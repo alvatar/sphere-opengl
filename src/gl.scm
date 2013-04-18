@@ -5,7 +5,7 @@
 (c-define-type GLboolean bool)
 (c-define-type GLbitfield unsigned-int)
 (c-define-type GLvoid void)
-(c-define-type GLvoid* (pointer void))
+(c-define-type GLvoid* (pointer void #f))
 (c-define-type GLbyte signed-char)
 (c-define-type GLbyte* (pointer GLbyte))
 (c-define-type GLshort short)
@@ -27,88 +27,41 @@
 (c-define-type GLdouble* (pointer GLdouble))
 (c-define-type GLclampd double)
 
-(c-sizeof GLbyte "GLbyte")
-(c-sizeof GLshort "GLshort")
-(c-sizeof GLint "GLint")
-(c-sizeof GLbyte "GLbyte")
-(c-sizeof GLubyte "GLubyte")
-(c-sizeof GLushort "GLushort")
-(c-sizeof GLuint "GLuint")
-(c-sizeof GLsizei "GLsizei")
-(c-sizeof GLfloat "GLfloat")
-(c-sizeof GLdouble "GLdouble")
+;;! GLbyte
+(build-c-sizeof GLbyte)
+(build-c-array-ffi GLbyte scheme-vector: s8)
+
+;;! GLubyte
+(build-c-sizeof GLubyte)
+(build-c-array-ffi GLubyte scheme-vector: u8)
+
+;;! GLushort
+(build-c-sizeof GLshort)
+(build-c-array-ffi GLshort scheme-vector: s16)
+
+;;! GLushort
+(build-c-sizeof GLushort)
+(build-c-array-ffi GLushort scheme-vector: u16)
 
 ;;! GLint
-(define make-GLint*
-  (c-lambda (size-t) GLint*
-            ;;"___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLint));"
-            "___result_voidstar = malloc(___arg1*sizeof(GLint));"
-            ))
-
-(define *->GLint
-  (c-lambda (GLint*) GLint
-            "___result = *___arg1;"))
+(build-c-sizeof GLint)
+(build-c-array-ffi GLint scheme-vector: s32)
 
 ;;! GLuint
-(define GLuint*-ref
-  (c-lambda (GLuint* size-t) GLuint
-            "___result = ((GLuint*)___arg1)[___arg2];"))
+(build-c-sizeof GLuint)
+(build-c-array-ffi GLuint scheme-vector: u32)
 
-(define *->GLuint
-  (c-lambda (GLuint*) GLuint
-            "___result = *___arg1;"))
-
-(define make-GLuint*
-  (c-lambda (size-t) GLuint*
-            ;;"___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLuint));"
-            "___result_voidstar = malloc(___arg1*sizeof(GLuint));"
-            ))
-
-;;! GLushort array
-(define make-GLushort*
-  (c-lambda (size-t) GLushort*
-            "___result_voidstar = malloc(___arg1*sizeof(GLushort));"))
-
-(define GLushort*-ref
-  (c-lambda (GLushort* size-t) GLushort
-            "___result = ((GLushort*)___arg1)[___arg2];"))
-
-(define GLushort*-set!
-  (c-lambda (GLushort* size-t GLushort) void
-            "((GLushort*)___arg1)[___arg2] = ___arg3;"))
-
-(define (u16vector->GLushort* vec)
-  (let* ((length (u16vector-length vec))
-         (buf (make-GLushort* length)))
-    (let loop ((i 0))
-      (if (< i length)
-          (begin
-            (GLushort*-set! buf i (u16vector-ref vec i))
-            (loop (+ i 1)))
-          buf))))
+;;! GLsizei
+(build-c-sizeof GLsizei)
+(build-c-array-ffi GLsizei scheme-vector: s64)
 
 ;;! GLfloat
-(define make-GLfloat*
-  (c-lambda (size-t) GLfloat*
-            "___result_voidstar = malloc(___arg1*sizeof(GLfloat));"))
+(build-c-sizeof GLfloat)
+(build-c-array-ffi GLfloat scheme-vector: f32)
 
-(define GLfloat*-ref
-  (c-lambda (GLfloat* size-t) GLfloat
-            "___result = ((GLfloat*)___arg1)[___arg2];"))
-
-(define GLfloat*-set!
-  (c-lambda (GLfloat* size-t GLfloat) void
-            "((GLfloat*)___arg1)[___arg2] = ___arg3;"))
-
-(define (f32vector->GLfloat* vec)
-  (let* ((length (f32vector-length vec))
-         (buf (make-GLfloat* length)))
-    (let loop ((i 0))
-      (if (< i length)
-          (begin
-            (GLfloat*-set! buf i (f32vector-ref vec i))
-            (loop (+ i 1)))
-          buf))))
+;;! GLdouble
+(build-c-sizeof GLdouble)
+(build-c-array-ffi GLdouble scheme-vector: f64)
 
 ;; Defined in terms of vector-based matrices. No checks are performed
 (define (matrix->GLfloat* mat)
@@ -117,7 +70,7 @@
          (max-i (fx- rows 1))
          (max-j (fx- columns 1))
          (buf-size (fx* rows columns))
-         (buf (make-GLfloat* buf-size)))
+         (buf (alloc-GLfloat* buf-size)))
     (let loop ((i 0)
                (i-offset 0)
                (j 0))
@@ -134,6 +87,7 @@
                     0)
               buf)))))
 
+;; TODO!: Only for debug
 (define print-GLfloats*
   (c-lambda (GLfloat* int) void "
 int i;
@@ -1011,19 +965,14 @@ for(i=0; i<___arg2; i++)
 (c-define-type GLsizeiptrARB unsigned-long-long)
 
 ;;! GLchar
-(define make-GLchar*
-  (c-lambda (size-t) GLchar*
-    ;;"___result_voidstar = ___EXT(___alloc_rc)(___arg1*sizeof(GLchar));"
-            "___result_voidstar = malloc(___arg1*sizeof(GLchar));"))
-
-(define *->GLchar
-  (c-lambda (GLchar*) GLchar
-            "___result = *___arg1;"))
+(build-c-sizeof GLchar)
+(build-c-array-ffi GLchar scheme-vector: s8)
 
 ;; TODO!
 (c-constants
  GL_ARRAY_BUFFER
  GL_STATIC_DRAW
+ GL_DYNAMIC_DRAW
  GL_VERTEX_SHADER
  GL_FRAGMENT_SHADER
  GL_COMPILE_STATUS
@@ -1067,6 +1016,9 @@ for(i=0; i<___arg2; i++)
 
 (define glBufferData
   (c-lambda (GLenum GLsizeiptr GLvoid* GLenum) void "glBufferData"))
+
+(define glBufferSubData
+  (c-lambda (GLenum GLintptr GLsizeiptr GLvoid*) void "glBufferSubData"))
 
 (define glClear
   (c-lambda (GLbitfield) void "glClear"))
