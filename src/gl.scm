@@ -98,7 +98,7 @@ for(i=0; i<___arg2; i++)
 "))
 
 
-(c-constants
+(build-c-constants
  ;; Boolean values
  GL_FALSE
  GL_TRUE	
@@ -969,7 +969,7 @@ for(i=0; i<___arg2; i++)
 (build-c-array-ffi GLchar scheme-vector: s8)
 
 ;; TODO!
-(c-constants
+(build-c-constants
  GL_ARRAY_BUFFER
  GL_STATIC_DRAW
  GL_DYNAMIC_DRAW
