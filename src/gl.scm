@@ -7,61 +7,52 @@
 (c-define-type GLvoid void)
 (c-define-type GLvoid* (pointer void #f))
 (c-define-type GLbyte signed-char)
-(c-define-type GLbyte* (pointer GLbyte))
 (c-define-type GLshort short)
-(c-define-type GLshort* (pointer GLshort))
 (c-define-type GLint int)
-(c-define-type GLint* (pointer GLint))
 (c-define-type GLubyte unsigned-char)
-(c-define-type GLubyte* (pointer GLubyte))
 (c-define-type GLushort unsigned-short)
-(c-define-type GLushort* (pointer GLushort))
 (c-define-type GLuint unsigned-int)
-(c-define-type GLuint* (pointer GLuint))
 (c-define-type GLsizei int)
-(c-define-type GLsizei* (pointer GLsizei))
 (c-define-type GLfloat float)
-(c-define-type GLfloat* (pointer GLfloat))
 (c-define-type GLclampf float)
 (c-define-type GLdouble double)
-(c-define-type GLdouble* (pointer GLdouble))
 (c-define-type GLclampd double)
 
 ;;! GLbyte
-(build-c-sizeof GLbyte)
-(build-c-array-ffi GLbyte scheme-vector: s8)
+(c-define-sizeof GLbyte)
+(c-define-array GLbyte scheme-vector: s8)
 
 ;;! GLubyte
-(build-c-sizeof GLubyte)
-(build-c-array-ffi GLubyte scheme-vector: u8)
+(c-define-sizeof GLubyte)
+(c-define-array GLubyte scheme-vector: u8)
 
 ;;! GLushort
-(build-c-sizeof GLshort)
-(build-c-array-ffi GLshort scheme-vector: s16)
+(c-define-sizeof GLshort)
+(c-define-array GLshort scheme-vector: s16)
 
 ;;! GLushort
-(build-c-sizeof GLushort)
-(build-c-array-ffi GLushort scheme-vector: u16)
+(c-define-sizeof GLushort)
+(c-define-array GLushort scheme-vector: u16)
 
 ;;! GLint
-(build-c-sizeof GLint)
-(build-c-array-ffi GLint scheme-vector: s32)
+(c-define-sizeof GLint)
+(c-define-array GLint scheme-vector: s32)
 
 ;;! GLuint
-(build-c-sizeof GLuint)
-(build-c-array-ffi GLuint scheme-vector: u32)
+(c-define-sizeof GLuint)
+(c-define-array GLuint scheme-vector: u32)
 
 ;;! GLsizei
-(build-c-sizeof GLsizei)
-(build-c-array-ffi GLsizei scheme-vector: s64)
+(c-define-sizeof GLsizei)
+(c-define-array GLsizei scheme-vector: s64)
 
 ;;! GLfloat
-(build-c-sizeof GLfloat)
-(build-c-array-ffi GLfloat scheme-vector: f32)
+(c-define-sizeof GLfloat)
+(c-define-array GLfloat scheme-vector: f32)
 
 ;;! GLdouble
-(build-c-sizeof GLdouble)
-(build-c-array-ffi GLdouble scheme-vector: f64)
+(c-define-sizeof GLdouble)
+(c-define-array GLdouble scheme-vector: f64)
 
 ;; Defined in terms of vector-based matrices. No checks are performed
 (define (matrix->GLfloat* mat)
@@ -98,7 +89,7 @@ for(i=0; i<___arg2; i++)
 "))
 
 
-(build-c-constants
+(c-define-constants
  ;; Boolean values
  GL_FALSE
  GL_TRUE	
@@ -954,10 +945,6 @@ for(i=0; i<___arg2; i++)
 ;; GLEW
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(c-define-type GLchar char)
-(c-define-type GLchar* (pointer GLchar))
-(c-define-type GLchar** nonnull-char-string-list)
-
 ;; ;; Defined as __int64 in glew
 (c-define-type GLintptr unsigned-long-long)
 (c-define-type GLsizeiptr unsigned-long-long)
@@ -965,11 +952,13 @@ for(i=0; i<___arg2; i++)
 (c-define-type GLsizeiptrARB unsigned-long-long)
 
 ;;! GLchar
-(build-c-sizeof GLchar)
-(build-c-array-ffi GLchar scheme-vector: s8)
+(c-define-type GLchar char)
+(c-define-type GLchar** nonnull-char-string-list)
+(c-define-sizeof GLchar)
+(c-define-array GLchar scheme-vector: s8)
 
 ;; TODO!
-(build-c-constants
+(c-define-constants
  GL_ARRAY_BUFFER
  GL_STATIC_DRAW
  GL_DYNAMIC_DRAW
@@ -1042,7 +1031,7 @@ for(i=0; i<___arg2; i++)
   (c-lambda (GLuint) void "glDeleteShader"))
 
 (define glDeleteTextures
-  (c-lambda (GLsizei (pointer GLuint)) void "glDeleteTextures"))
+  (c-lambda (GLsizei GLuint*) void "glDeleteTextures"))
 
 (define glDetachShader
   (c-lambda (GLuint GLuint) void "glDetachShader"))
@@ -1060,9 +1049,7 @@ for(i=0; i<___arg2; i++)
   (c-lambda (GLenum GLint GLsizei) void "glDrawArrays"))
 
 (define glDrawElements
-  (c-lambda (GLenum GLsizei GLenum (pointer GLvoid))
-            void
-            "glDrawElements"))
+  (c-lambda (GLenum GLsizei GLenum GLvoid*) void "glDrawElements"))
 
 (define glEnable
   (c-lambda (GLenum) void "glEnable"))
@@ -1077,13 +1064,13 @@ for(i=0; i<___arg2; i++)
   (c-lambda () void "glEnd"))
 
 (define glGenBuffers
-  (c-lambda (GLsizei (pointer GLuint)) void "glGenBuffers"))
+  (c-lambda (GLsizei GLuint*) void "glGenBuffers"))
 
 (define glGenTextures
-  (c-lambda (GLsizei (pointer GLuint)) void "glGenTextures"))
+  (c-lambda (GLsizei GLuint*) void "glGenTextures"))
 
 (define glGenVertexArrays
-  (c-lambda (GLsizei (pointer GLuint)) void "glGenVertexArrays"))
+  (c-lambda (GLsizei GLuint*) void "glGenVertexArrays"))
 
 (define glGetProgramiv
   (c-lambda (GLuint GLenum GLint*) void "glGetProgramiv"))
@@ -1141,7 +1128,7 @@ for(i=0; i<___arg2; i++)
   (c-lambda (GLenum GLenum GLfloat) void "glTexParameterf"))
 
 (define glTexImage2D
-  (c-lambda (GLenum GLint GLint GLsizei GLsizei GLint GLenum GLenum (pointer GLvoid))
+  (c-lambda (GLenum GLint GLint GLsizei GLsizei GLint GLenum GLenum GLvoid*)
             void
             "glTexImage2D"))
 
@@ -1150,7 +1137,7 @@ for(i=0; i<___arg2; i++)
   (c-lambda (GLint GLenum GLsizei GLvoid*) void "glTexCoordPointer"))
 
 (define glTexSubImage2D
-  (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLenum (pointer GLvoid #f)) void "glTexSubImage2D"))
+  (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLenum GLvoid*) void "glTexSubImage2D"))
 
 (define glUseProgram
   (c-lambda (GLuint) void "glUseProgram"))
