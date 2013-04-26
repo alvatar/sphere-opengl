@@ -19,38 +19,47 @@
 (c-define-type GLclampd double)
 
 ;;! GLbyte
+(c-define-type* GLbyte)
 (c-define-sizeof GLbyte)
 (c-define-array GLbyte scheme-vector: s8)
 
 ;;! GLubyte
+(c-define-type* GLubyte)
 (c-define-sizeof GLubyte)
 (c-define-array GLubyte scheme-vector: u8)
 
 ;;! GLushort
+(c-define-type* GLshort)
 (c-define-sizeof GLshort)
 (c-define-array GLshort scheme-vector: s16)
 
 ;;! GLushort
+(c-define-type* GLushort)
 (c-define-sizeof GLushort)
 (c-define-array GLushort scheme-vector: u16)
 
 ;;! GLint
+(c-define-type* GLint)
 (c-define-sizeof GLint)
 (c-define-array GLint scheme-vector: s32)
 
 ;;! GLuint
+(c-define-type* GLuint)
 (c-define-sizeof GLuint)
 (c-define-array GLuint scheme-vector: u32)
 
 ;;! GLsizei
+(c-define-type* GLsizei)
 (c-define-sizeof GLsizei)
 (c-define-array GLsizei scheme-vector: s64)
 
 ;;! GLfloat
+(c-define-type* GLfloat)
 (c-define-sizeof GLfloat)
 (c-define-array GLfloat scheme-vector: f32)
 
 ;;! GLdouble
+(c-define-type* GLdouble)
 (c-define-sizeof GLdouble)
 (c-define-array GLdouble scheme-vector: f64)
 
@@ -954,6 +963,7 @@ for(i=0; i<___arg2; i++)
 ;;! GLchar
 (c-define-type GLchar char)
 (c-define-type GLchar** nonnull-char-string-list)
+(c-define-type* GLchar)
 (c-define-sizeof GLchar)
 (c-define-array GLchar scheme-vector: s8)
 
