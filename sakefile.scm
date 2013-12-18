@@ -24,11 +24,7 @@
 
 (define-task install ()
   (for-each (lambda (m) (sake#install-compiled-module m omit-o: #t versions: '(() (debug)))) gl-es-modules)
-  (for-each (lambda (m) (sake#install-compiled-module m versions: '(() (debug)))) gl-modules)
-  (sake#install-sphere-to-system))
-
-(define-task uninstall ()
-  (sake#uninstall-sphere-from-system))
+  (for-each (lambda (m) (sake#install-compiled-module m versions: '(() (debug)))) gl-modules))
 
 (define-task all (compile install)
   'all)
