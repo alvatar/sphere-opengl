@@ -567,7 +567,7 @@ GL_DOT3_RGBA
   (c-lambda (GLenum) char-string "glGetString"))
 
 (define glLoadIdentity
-  (c-lambda () void "glLoadIdentity"))
+  (c-lambda '() void "glLoadIdentity"))
 
 (define glMatrixMode
   (c-lambda (GLenum) void "glMatrixMode"))
@@ -581,10 +581,10 @@ GL_DOT3_RGBA
 ;;             "glOrtho"))
 
 (define glPopMatrix
-  (c-lambda () void "glPopMatrix"))
+  (c-lambda '() void "glPopMatrix"))
 
 (define glPushMatrix
-  (c-lambda () void "glPushMatrix"))
+  (c-lambda '() void "glPushMatrix"))
 
 (define glTexParameteri
   (c-lambda (GLenum GLenum GLint) void "glTexParameteri"))
