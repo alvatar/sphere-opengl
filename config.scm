@@ -8,7 +8,11 @@
              (core: ffi-header))
             (load
              (core: ffi)))
- (gl (prelude
+ (gl (cc-options
+      (pkg-config--cflags "gl glew") "-w")
+     (ld-options
+      (pkg-config--libs "gl glew") "-w")
+     (prelude
       (core: ffi-header))
      (load
       (core: ffi))))
