@@ -1,9 +1,6 @@
 (define gl-es-modules '(gl-es gl-es-ext))
 (define gl-modules '(gl))
 
-(define-task clean ()
-  (sake#default-clean))
-
 (define-task compile ()
   ;; GL ES
   (for-each (lambda (m)
@@ -16,12 +13,18 @@
               (sake#compile-module m))
             gl-modules))
 
-(define-task install ()
-  (for-each (lambda (m) (sake#install-compiled-module m omit-o: #t versions: '(() (debug)))) gl-es-modules)
-  (for-each (lambda (m) (sake#install-compiled-module m versions: '(() (debug)))) gl-modules))
+(define-task post-compile ()
+  (for-each (lambda (m) (sake#make-module-available m omit-o: #t versions: '(() (debug)))) gl-es-modules)
+  (for-each (lambda (m) (sake#make-module-available m versions: '(() (debug)))) gl-modules))
 
-(define-task force-install ()
+(define-task install ()
   (sake#install-sphere-to-system))
 
-(define-task all (compile install)
+(define-task test ()
+  (sake#test-all))
+
+(define-task clean ()
+  (sake#default-clean))
+
+(define-task all (compile post-compile)
   'all)
