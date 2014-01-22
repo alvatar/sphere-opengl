@@ -980,7 +980,7 @@ for(i=0; i<___arg2; i++)
  GL_TEXTURE0)
 
 (define glewInit
-  (c-lambda '() GLenum "glewInit"))
+  (c-lambda () GLenum "glewInit"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions
@@ -1032,7 +1032,7 @@ for(i=0; i<___arg2; i++)
   (c-lambda (GLuint) void "glCompileShader"))
 
 (define glCreateProgram
-  (c-lambda '() GLuint "glCreateProgram"))
+  (c-lambda () GLuint "glCreateProgram"))
 
 (define glCreateShader
   (c-lambda (GLenum) GLuint "glCreateShader"))
@@ -1071,7 +1071,7 @@ for(i=0; i<___arg2; i++)
   (c-lambda (GLuint) void "glEnableVertexAttribArray"))
 
 (define glEnd
-  (c-lambda '() void "glEnd"))
+  (c-lambda () void "glEnd"))
 
 (define glGenBuffers
   (c-lambda (GLsizei GLuint*) void "glGenBuffers"))
@@ -1104,7 +1104,7 @@ for(i=0; i<___arg2; i++)
   (c-lambda (GLuint) void "glLinkProgram"))
 
 (define glLoadIdentity
-  (c-lambda '() void "glLoadIdentity"))
+  (c-lambda () void "glLoadIdentity"))
 
 (define glMatrixMode
   (c-lambda (GLenum) void "glMatrixMode"))
@@ -1114,10 +1114,10 @@ for(i=0; i<___arg2; i++)
             "glOrtho"))
 
 (define glPopMatrix
-  (c-lambda '() void "glPopMatrix"))
+  (c-lambda () void "glPopMatrix"))
 
 (define glPushMatrix
-  (c-lambda '() void "glPushMatrix"))
+  (c-lambda () void "glPushMatrix"))
 
 (define glSamplerParameterf
   (c-lambda (GLuint GLenum GLfloat) void "glSamplerParameterf"))
