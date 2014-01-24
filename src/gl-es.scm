@@ -1,38 +1,63 @@
+;; Incomplete API
+
 (c-declare "#include \"GLES/gl.h\"")
 
 (c-define-type GLenum unsigned-int)
-(c-define-type GLboolean unsigned-char)
+(c-define-type GLboolean bool)
 (c-define-type GLbitfield unsigned-int)
 (c-define-type GLvoid void)
-(c-define-type GLvoid* (pointer void))
+(c-define-type GLvoid* (pointer void #f))
 (c-define-type GLbyte signed-char)
-(c-define-type GLbyte* (pointer GLbyte))
 (c-define-type GLshort short)
-(c-define-type GLshort* (pointer GLshort))
 (c-define-type GLint int)
-(c-define-type GLint* (pointer GLint))
 (c-define-type GLubyte unsigned-char)
-(c-define-type GLubyte* (pointer GLubyte))
 (c-define-type GLushort unsigned-short)
-(c-define-type GLushort* (pointer GLushort))
 (c-define-type GLuint unsigned-int)
-(c-define-type GLuint* (pointer GLuint))
 (c-define-type GLsizei int)
-(c-define-type GLsizei* (pointer GLsizei))
 (c-define-type GLfloat float)
-(c-define-type GLfloat* (pointer GLfloat))
 (c-define-type GLclampf float)
 (c-define-type GLclampd double)
 
-(c-build-sizeof GLbyte)
-(c-build-sizeof GLshort)
-(c-build-sizeof GLint)
-(c-build-sizeof GLbyte)
-(c-build-sizeof GLubyte)
-(c-build-sizeof GLushort)
-(c-build-sizeof GLuint)
-(c-build-sizeof GLsizei)
-(c-build-sizeof GLfloat)
+;;! GLbyte
+(c-define-type* GLbyte)
+(c-define-sizeof GLbyte)
+(c-define-array GLbyte scheme-vector: s8)
+
+;;! GLubyte
+(c-define-type* GLubyte)
+(c-define-sizeof GLubyte)
+(c-define-array GLubyte scheme-vector: u8)
+
+;;! GLushort
+(c-define-type* GLshort)
+(c-define-sizeof GLshort)
+(c-define-array GLshort scheme-vector: s16)
+
+;;! GLushort
+(c-define-type* GLushort)
+(c-define-sizeof GLushort)
+(c-define-array GLushort scheme-vector: u16)
+
+;;! GLint
+(c-define-type* GLint)
+(c-define-sizeof GLint)
+(c-define-array GLint scheme-vector: s32)
+
+;;! GLuint
+(c-define-type* GLuint)
+(c-define-sizeof GLuint)
+(c-define-array GLuint scheme-vector: u32)
+
+;;! GLsizei
+(c-define-type* GLsizei)
+(c-define-sizeof GLsizei)
+(c-define-array GLsizei scheme-vector: s64)
+
+;;! GLfloat
+(c-define-type* GLfloat)
+(c-define-sizeof GLfloat)
+(c-define-array GLfloat scheme-vector: f32)
+
 
 (define make-GLuint*
   (c-lambda (size-t) GLuint*
@@ -103,7 +128,7 @@
 ;;     "___result = *(int*)___arg1_voidstar;"))
 
 
-(c-constants
+(c-define-constants
  ;; Core versions
  GL_VERSION_ES_CM_1_0
  GL_VERSION_ES_CL_1_0

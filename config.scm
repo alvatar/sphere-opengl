@@ -8,6 +8,10 @@
              (core: ffi-header))
             (load
              (core: ffi)))
+ (gl-es2 (prelude
+          (core: ffi-header))
+         (load
+          (core: ffi)))
  (gl (cc-options
       (pkg-config--cflags "gl glew") "-w")
      (ld-options
