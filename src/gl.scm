@@ -997,6 +997,9 @@ for(i=0; i<___arg2; i++)
 (define glGetAttribLocation
   (c-lambda (GLuint char-string) GLuint "glGetAttribLocation"))
 
+(define glBindAttribLocation 
+  (c-lambda (GLuint GLuint char-string) void "glBindAttribLocation"))
+
 (define glBegin
   (c-lambda (GLenum) void "glBegin"))
 
@@ -1086,6 +1089,9 @@ for(i=0; i<___arg2; i++)
 
 (define glGetProgramiv
   (c-lambda (GLuint GLenum GLint*) void "glGetProgramiv"))
+
+(define glGetProgramInfoLog
+  (c-lambda (GLuint GLsizei GLsizei* GLchar*) void "glGetProgramInfoLog"))
 
 (define glGenSamplers
   (c-lambda (GLsizei GLuint*) void "glGenSamplers"))
