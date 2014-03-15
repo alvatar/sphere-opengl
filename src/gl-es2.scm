@@ -483,7 +483,7 @@
 
 (define glActiveTexture (c-lambda (GLenum) void "glActiveTexture"))
 (define glAttachShader (c-lambda (GLuint GLuint) void "glAttachShader"))
-(define glBindAttribLocation (c-lambda (GLuint GLuint GLchar*) void "glBindAttribLocation"))
+(define glBindAttribLocation (c-lambda (GLuint GLuint char-string) void "glBindAttribLocation"))
 (define glBindBuffer (c-lambda (GLenum GLuint) void "glBindBuffer"))
 (define glBindFramebuffer (c-lambda (GLenum GLuint) void "glBindFramebuffer"))
 (define glBindRenderbuffer (c-lambda (GLenum GLuint) void "glBindRenderbuffer"))
