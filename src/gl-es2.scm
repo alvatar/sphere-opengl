@@ -1,6 +1,5 @@
 (c-declare "#include \"GLES2/gl2.h\"")
 
-
 ;;------------------------------------------------------------------------------
 ;;!! Types, pointers, arrays
 
@@ -23,13 +22,13 @@
 
 
 ;;! GLenum
-(c-define-type GLenum unsigned-int)
+(c-define-type GLenum unsigned-int32)
 (c-define-type* GLenum)
 (c-define-sizeof GLenum)
-(c-define-array GLenum scheme-vector: u64)
+(c-define-array GLenum scheme-vector: u32)
 
 ;;! GLboolean
-(c-define-type GLboolean bool)
+(c-define-type GLboolean unsigned-int8)
 (c-define-type* GLboolean)
 (c-define-sizeof GLboolean)
 (c-define-array GLboolean scheme-vector: u8)
@@ -538,7 +537,7 @@
 (define glGetActiveAttrib (c-lambda (GLuint GLuint GLsizei GLsizei* GLint* GLenum* GLchar*) void "glGetActiveAttrib"))
 (define glGetActiveUniform (c-lambda (GLuint GLuint GLsizei GLsizei* GLint* GLenum* GLchar*) void "glGetActiveUniform"))
 (define glGetAttachedShaders (c-lambda (GLuint GLsizei GLsizei* GLuint*) void "glGetAttachedShaders"))
-(define glGetAttribLocation (c-lambda (GLuint GLchar*) GLint "glGetAttribLocation"))
+(define glGetAttribLocation (c-lambda (GLuint char-string) GLint "glGetAttribLocation"))
 (define glGetBooleanv (c-lambda (GLenum GLboolean*) void "glGetBooleanv"))
 (define glGetBufferParameteriv (c-lambda (GLenum GLenum GLint*) void "glGetBufferParameteriv"))
 (define glGetError (c-lambda () GLenum "glGetError"))
@@ -557,7 +556,7 @@
 (define glGetTexParameteriv (c-lambda (GLenum GLenum GLint*) void "glGetTexParameteriv"))
 (define glGetUniformfv (c-lambda (GLuint GLint GLfloat*) void "glGetUniformfv"))
 (define glGetUniformiv (c-lambda (GLuint GLint GLint*) void "glGetUniformiv"))
-(define glGetUniformLocation (c-lambda (GLuint GLchar*) GLint "glGetUniformLocation"))
+(define glGetUniformLocation (c-lambda (GLuint char-string) GLint "glGetUniformLocation"))
 (define glGetVertexAttribfv (c-lambda (GLuint GLenum GLfloat*) void "glGetVertexAttribfv"))
 (define glGetVertexAttribiv (c-lambda (GLuint GLenum GLint*) void "glGetVertexAttribiv"))
 (define glGetVertexAttribPointerv (c-lambda (GLuint GLenum GLvoid**) void "glGetVertexAttribPointerv"))
@@ -623,3 +622,28 @@
 (define glVertexAttrib4fv (c-lambda (GLuint GLfloat*) void "glVertexAttrib4fv"))
 (define glVertexAttribPointer (c-lambda (GLuint GLint GLenum GLboolean GLsizei GLvoid*) void "glVertexAttribPointer"))
 (define glViewport (c-lambda (GLint GLint GLsizei GLsizei) void "glViewport"))
+
+;; Defined in terms of vector-based matrices. No checks are performed
+(define (matrix->GLfloat* mat)
+  (let* ((rows (vector-length mat))
+         (columns (vector-length (vector-ref mat 0)))
+         (max-i (fx- rows 1))
+         (max-j (fx- columns 1))
+         (buf-size (fx* 2 rows columns))
+         (buf (alloc-GLfloat* buf-size)))
+    (let loop ((i 0)
+               (i-offset 0)
+               (j 0))
+      (GLfloat*-set! buf
+                     (fx+ i-offset j)
+                     (vector-ref (vector-ref mat j) i))
+      (if (< j max-j)
+          (loop i
+                i-offset
+                (fx+ 1 j))
+          (if (< i max-i)
+              (loop (fx+ 1 i)
+                    (fx+ i-offset columns)
+                    0)
+              buf)))))
+

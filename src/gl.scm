@@ -3,11 +3,10 @@
 (c-declare "#include \"glew.h\"")
 (c-declare "#include \"gl.h\"")
 
-(c-define-type GLenum unsigned-int)
-(c-define-type GLboolean bool)
 (c-define-type GLbitfield unsigned-int)
 (c-define-type GLvoid void)
 (c-define-type GLvoid* (pointer void #f))
+(c-define-type GLvoid** (pointer GLvoid* #f))
 (c-define-type GLbyte signed-char)
 (c-define-type GLshort short)
 (c-define-type GLint int)
@@ -19,6 +18,26 @@
 (c-define-type GLclampf float)
 (c-define-type GLdouble double)
 (c-define-type GLclampd double)
+
+
+;;! GLenum
+(c-define-type GLenum unsigned-int)
+(c-define-type* GLenum)
+(c-define-sizeof GLenum)
+(c-define-array GLenum scheme-vector: u64)
+
+;;! GLboolean
+(c-define-type GLboolean bool)
+(c-define-type* GLboolean)
+(c-define-sizeof GLboolean)
+(c-define-array GLboolean scheme-vector: u8)
+
+;;! GLchar
+(c-define-type GLchar char)
+(c-define-type GLchar** nonnull-char-string-list)
+(c-define-type* GLchar)
+(c-define-sizeof GLchar)
+(c-define-array GLchar scheme-vector: s8)
 
 ;;! GLbyte
 (c-define-type* GLbyte)
@@ -962,20 +981,32 @@ for(i=0; i<___arg2; i++)
 (c-define-type GLintptrARB unsigned-long-long)
 (c-define-type GLsizeiptrARB unsigned-long-long)
 
-;;! GLchar
-(c-define-type GLchar char)
-(c-define-type GLchar** nonnull-char-string-list)
-(c-define-type* GLchar)
-(c-define-sizeof GLchar)
-(c-define-array GLchar scheme-vector: s8)
-
 ;; TODO!
 (c-define-constants
+ GL_FRAGMENT_SHADER
+ GL_VERTEX_SHADER
+ GL_MAX_VERTEX_ATTRIBS
+ GL_MAX_VERTEX_UNIFORM_VECTORS
+ GL_MAX_VARYING_VECTORS
+ GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS
+ GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS
+ GL_MAX_TEXTURE_IMAGE_UNITS
+ GL_MAX_FRAGMENT_UNIFORM_VECTORS
+ GL_SHADER_TYPE
+ GL_DELETE_STATUS
+ GL_LINK_STATUS
+ GL_VALIDATE_STATUS
+ GL_ATTACHED_SHADERS
+ GL_ACTIVE_UNIFORMS
+ GL_ACTIVE_UNIFORM_MAX_LENGTH
+ GL_ACTIVE_ATTRIBUTES
+ GL_ACTIVE_ATTRIBUTE_MAX_LENGTH
+ GL_SHADING_LANGUAGE_VERSION
+ GL_CURRENT_PROGRAM
+
  GL_ARRAY_BUFFER
  GL_STATIC_DRAW
  GL_DYNAMIC_DRAW
- GL_VERTEX_SHADER
- GL_FRAGMENT_SHADER
  GL_COMPILE_STATUS
  GL_LINK_STATUS
  GL_INFO_LOG_LENGTH
@@ -988,193 +1019,175 @@ for(i=0; i<___arg2; i++)
 ;; Functions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(define glActiveTexture
-  (c-lambda (GLenum) void "glActiveTexture"))
-
-(define glAttachShader
-  (c-lambda (GLuint GLuint) void "glAttachShader"))
-
-(define glGetAttribLocation
-  (c-lambda (GLuint char-string) GLuint "glGetAttribLocation"))
-
-(define glBindAttribLocation 
-  (c-lambda (GLuint GLuint char-string) void "glBindAttribLocation"))
-
-(define glBegin
-  (c-lambda (GLenum) void "glBegin"))
-
-(define glBlendFunc
-  (c-lambda (GLenum GLenum) void "glBlendFunc"))
-
-(define glBindTexture
-  (c-lambda (GLenum GLuint) void "glBindTexture"))
-
-(define glBindBuffer
-  (c-lambda (GLenum GLuint) void "glBindBuffer"))
-
-(define glBindSampler
-  (c-lambda (GLuint GLuint) void "glBindSampler"))
-
-(define glBindVertexArray
-  (c-lambda (GLuint) void "glBindVertexArray"))
-
-(define glBufferData
-  (c-lambda (GLenum GLsizeiptr GLvoid* GLenum) void "glBufferData"))
-
-(define glBufferSubData
-  (c-lambda (GLenum GLintptr GLsizeiptr GLvoid*) void "glBufferSubData"))
-
-(define glClear
-  (c-lambda (GLbitfield) void "glClear"))
-
-(define glClearColor
-  (c-lambda (GLclampf GLclampf GLclampf GLclampf) void "glClearColor"))
-
-(define glColor3f
-  (c-lambda (GLfloat GLfloat GLfloat) void "glColor3f"))
-
-(define glCompileShader
-  (c-lambda (GLuint) void "glCompileShader"))
-
-(define glCreateProgram
-  (c-lambda () GLuint "glCreateProgram"))
-
-(define glCreateShader
-  (c-lambda (GLenum) GLuint "glCreateShader"))
-
-(define glDeleteShader
-  (c-lambda (GLuint) void "glDeleteShader"))
-
-(define glDeleteTextures
-  (c-lambda (GLsizei GLuint*) void "glDeleteTextures"))
-
-(define glDetachShader
-  (c-lambda (GLuint GLuint) void "glDetachShader"))
-
-(define glDisable
-  (c-lambda (GLenum) void "glDisable"))
-
-(define glDisableClientState
-  (c-lambda (GLenum) void "glDisableClientState"))
-
-(define glDisableVertexAttribArray
-  (c-lambda (GLenum) void "glDisableVertexAttribArray"))
-
-(define glDrawArrays
-  (c-lambda (GLenum GLint GLsizei) void "glDrawArrays"))
-
-(define glDrawElements
-  (c-lambda (GLenum GLsizei GLenum GLvoid*) void "glDrawElements"))
-
-(define glEnable
-  (c-lambda (GLenum) void "glEnable"))
-
-(define glEnableClientState
-  (c-lambda (GLenum) void "glEnableClientState"))
-
-(define glEnableVertexAttribArray
-  (c-lambda (GLuint) void "glEnableVertexAttribArray"))
-
-(define glEnd
-  (c-lambda () void "glEnd"))
-
-(define glGenBuffers
-  (c-lambda (GLsizei GLuint*) void "glGenBuffers"))
-
-(define glGenTextures
-  (c-lambda (GLsizei GLuint*) void "glGenTextures"))
-
-(define glGenVertexArrays
-  (c-lambda (GLsizei GLuint*) void "glGenVertexArrays"))
-
-(define glGetProgramiv
-  (c-lambda (GLuint GLenum GLint*) void "glGetProgramiv"))
-
-(define glGetProgramInfoLog
-  (c-lambda (GLuint GLsizei GLsizei* GLchar*) void "glGetProgramInfoLog"))
-
-(define glGenSamplers
-  (c-lambda (GLsizei GLuint*) void "glGenSamplers"))
-
-(define glGetShaderiv
-  (c-lambda (GLuint GLenum GLint*) void "glGetShaderiv"))
-
-(define glGetShaderInfoLog
-  (c-lambda (GLuint GLsizei GLsizei* GLchar*) void "glGetShaderInfoLog"))
-
-(define glGetString
-  (c-lambda (GLenum) GLubyte* "glGetString"))
-
-(define glGetUniformLocation
-  (c-lambda (GLuint char-string) GLint "glGetUniformLocation"))
-
-(define glLinkProgram
-  (c-lambda (GLuint) void "glLinkProgram"))
-
-(define glLoadIdentity
-  (c-lambda () void "glLoadIdentity"))
-
-(define glMatrixMode
-  (c-lambda (GLenum) void "glMatrixMode"))
-
-(define glOrtho
-  (c-lambda (GLdouble GLdouble GLdouble GLdouble GLdouble GLdouble) void
-            "glOrtho"))
-
-(define glPopMatrix
-  (c-lambda () void "glPopMatrix"))
-
-(define glPushMatrix
-  (c-lambda () void "glPushMatrix"))
-
-(define glSamplerParameterf
-  (c-lambda (GLuint GLenum GLfloat) void "glSamplerParameterf"))
-
-(define glSamplerParameteri
-  (c-lambda (GLuint GLenum GLint) void "glSamplerParameteri"))
-
-(define glScissor
-  (c-lambda (GLint GLint GLsizei GLsizei) void "glScissor"))
-
-(define glShaderSource
-  (c-lambda (GLuint GLsizei GLchar** GLint*) void "glShaderSource"))
-
-(define glTexParameteri
-  (c-lambda (GLenum GLenum GLint) void "glTexParameteri"))
-
-(define glTexParameterf
-  (c-lambda (GLenum GLenum GLfloat) void "glTexParameterf"))
-
-(define glTexImage2D
-  (c-lambda (GLenum GLint GLint GLsizei GLsizei GLint GLenum GLenum GLvoid*)
-            void
-            "glTexImage2D"))
+(define glActiveTexture (c-lambda (GLenum) void "glActiveTexture"))
+(define glAttachShader (c-lambda (GLuint GLuint) void "glAttachShader"))
+(define glBindAttribLocation (c-lambda (GLuint GLuint char-string) void "glBindAttribLocation"))
+(define glBindBuffer (c-lambda (GLenum GLuint) void "glBindBuffer"))
+(define glBindFramebuffer (c-lambda (GLenum GLuint) void "glBindFramebuffer"))
+(define glBindRenderbuffer (c-lambda (GLenum GLuint) void "glBindRenderbuffer"))
+(define glBindTexture (c-lambda (GLenum GLuint) void "glBindTexture"))
+(define glBlendColor (c-lambda (GLclampf GLclampf GLclampf GLclampf) void "glBlendColor"))
+(define glBlendEquation (c-lambda (GLenum) void "glBlendEquation"))
+(define glBlendEquationSeparate (c-lambda (GLenum GLenum) void "glBlendEquationSeparate"))
+(define glBlendFunc (c-lambda (GLenum GLenum) void "glBlendFunc"))
+(define glBlendFuncSeparate (c-lambda (GLenum GLenum GLenum GLenum) void "glBlendFuncSeparate"))
+(define glBufferData (c-lambda (GLenum GLsizeiptr GLvoid* GLenum) void "glBufferData"))
+(define glBufferSubData (c-lambda (GLenum GLintptr GLsizeiptr GLvoid*) void "glBufferSubData"))
+(define glCheckFramebufferStatus (c-lambda (GLenum) GLenum "glCheckFramebufferStatus"))
+(define glClear (c-lambda (GLbitfield) void "glClear"))
+(define glClearColor (c-lambda (GLclampf GLclampf GLclampf GLclampf) void "glClearColor"))
+(define glClearDepthf (c-lambda (GLclampf) void "glClearDepthf"))
+(define glClearStencil (c-lambda (GLint) void "glClearStencil"))
+(define glColorMask (c-lambda (GLboolean GLboolean GLboolean GLboolean) void "glColorMask"))
+(define glCompileShader (c-lambda (GLuint) void "glCompileShader"))
+(define glCompressedTexImage2D (c-lambda (GLenum GLint GLenum GLsizei GLsizei GLint GLsizei GLvoid*) void "glCompressedTexImage2D"))
+(define glCompressedTexSubImage2D (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLsizei GLvoid*) void "glCompressedTexSubImage2D"))
+(define glCopyTexImage2D (c-lambda (GLenum GLint GLenum GLint GLint GLsizei GLsizei GLint) void "glCopyTexImage2D"))
+(define glCopyTexSubImage2D (c-lambda (GLenum GLint GLint GLint GLint GLint GLsizei GLsizei) void "glCopyTexSubImage2D"))
+(define glCreateProgram (c-lambda () GLuint "glCreateProgram"))
+(define glCreateShader (c-lambda (GLenum) GLuint "glCreateShader"))
+(define glCullFace (c-lambda (GLenum) void "glCullFace"))
+(define glDeleteBuffers (c-lambda (GLsizei GLuint*) void "glDeleteBuffers"))
+(define glDeleteFramebuffers (c-lambda (GLsizei GLuint*) void "glDeleteFramebuffers"))
+(define glDeleteProgram (c-lambda (GLuint) void "glDeleteProgram"))
+(define glDeleteRenderbuffers (c-lambda (GLsizei GLuint*) void "glDeleteRenderbuffers"))
+(define glDeleteSamplers (c-lambda (GLsizei GLuint*) void "glDeleteSamplers"))
+(define glDeleteShader (c-lambda (GLuint) void "glDeleteShader"))
+(define glDeleteTextures (c-lambda (GLsizei GLuint*) void "glDeleteTextures"))
+(define glDepthFunc (c-lambda (GLenum) void "glDepthFunc"))
+(define glDepthMask (c-lambda (GLboolean) void "glDepthMask"))
+(define glDepthRangef (c-lambda (GLclampf GLclampf) void "glDepthRangef"))
+(define glDetachShader (c-lambda (GLuint GLuint) void "glDetachShader"))
+(define glDisable (c-lambda (GLenum) void "glDisable"))
+(define glDisableClientState (c-lambda (GLenum) void "glDisableClientState"))
+(define glDisableVertexAttribArray (c-lambda (GLuint) void "glDisableVertexAttribArray"))
+(define glDrawArrays (c-lambda (GLenum GLint GLsizei) void "glDrawArrays"))
+(define glDrawElements (c-lambda (GLenum GLsizei GLenum GLvoid*) void "glDrawElements"))
+(define glEnable (c-lambda (GLenum) void "glEnable"))
+(define glEnableClientState (c-lambda (GLenum) void "glEnableClientState"))
+(define glEnableVertexAttribArray (c-lambda (GLuint) void "glEnableVertexAttribArray"))
+(define glEnd (c-lambda () void "glEnd"))
+(define glFinish (c-lambda () void "glFinish"))
+(define glFlush (c-lambda () void "glFlush"))
+(define glFramebufferRenderbuffer (c-lambda (GLenum GLenum GLenum GLuint) void "glFramebufferRenderbuffer"))
+(define glFramebufferTexture2D (c-lambda (GLenum GLenum GLenum GLuint GLint) void "glFramebufferTexture2D"))
+(define glFrontFace (c-lambda (GLenum) void "glFrontFace"))
+(define glGenBuffers (c-lambda (GLsizei GLuint*) void "glGenBuffers"))
+(define glGenerateMipmap (c-lambda (GLenum) void "glGenerateMipmap"))
+(define glGenFramebuffers (c-lambda (GLsizei GLuint*) void "glGenFramebuffers"))
+(define glGenRenderbuffers (c-lambda (GLsizei GLuint*) void "glGenRenderbuffers"))
+(define glGenTextures (c-lambda (GLsizei GLuint*) void "glGenTextures"))
+(define glGenVertexArrays (c-lambda (GLsizei GLuint*) void "glGenVertexArrays"))
+(define glGetActiveAttrib (c-lambda (GLuint GLuint GLsizei GLsizei* GLint* GLenum* GLchar*) void "glGetActiveAttrib"))
+(define glGetActiveUniform (c-lambda (GLuint GLuint GLsizei GLsizei* GLint* GLenum* GLchar*) void "glGetActiveUniform"))
+(define glGetAttachedShaders (c-lambda (GLuint GLsizei GLsizei* GLuint*) void "glGetAttachedShaders"))
+(define glGetAttribLocation (c-lambda (GLuint GLchar*) GLint "glGetAttribLocation"))
+(define glGetBooleanv (c-lambda (GLenum GLboolean*) void "glGetBooleanv"))
+(define glGetBufferParameteriv (c-lambda (GLenum GLenum GLint*) void "glGetBufferParameteriv"))
+(define glGetError (c-lambda () GLenum "glGetError"))
+(define glGetFloatv (c-lambda (GLenum GLfloat*) void "glGetFloatv"))
+(define glGetFramebufferAttachmentParameteriv (c-lambda (GLenum GLenum GLenum GLint*) void "glGetFramebufferAttachmentParameteriv"))
+(define glGetIntegerv (c-lambda (GLenum GLint*) void "glGetIntegerv"))
+(define glGetProgramiv (c-lambda (GLuint GLenum GLint*) void "glGetProgramiv"))
+(define glGetProgramInfoLog (c-lambda (GLuint GLsizei GLsizei* GLchar*) void "glGetProgramInfoLog"))
+(define glGetRenderbufferParameteriv (c-lambda (GLenum GLenum GLint*) void "glGetRenderbufferParameteriv"))
+(define glGenSamplers (c-lambda (GLsizei GLuint*) void "glGenSamplers"))
+(define glGetAttribLocation (c-lambda (GLuint char-string) GLuint "glGetAttribLocation"))
+(define glGetShaderiv (c-lambda (GLuint GLenum GLint*) void "glGetShaderiv"))
+(define glGetShaderInfoLog (c-lambda (GLuint GLsizei GLsizei* GLchar*) void "glGetShaderInfoLog"))
+(define glGetShaderPrecisionFormat (c-lambda (GLenum GLenum GLint* GLint*) void "glGetShaderPrecisionFormat"))
+(define glGetShaderSource (c-lambda (GLuint GLsizei GLsizei* GLchar*) void "glGetShaderSource"))
+(define glGetString (c-lambda (GLenum) GLubyte* "glGetString"))
+(define glGetTexParameterfv (c-lambda (GLenum GLenum GLfloat*) void "glGetTexParameterfv"))
+(define glGetTexParameteriv (c-lambda (GLenum GLenum GLint*) void "glGetTexParameteriv"))
+(define glGetUniformfv (c-lambda (GLuint GLint GLfloat*) void "glGetUniformfv"))
+(define glGetUniformiv (c-lambda (GLuint GLint GLint*) void "glGetUniformiv"))
+(define glGetUniformLocation (c-lambda (GLuint char-string) GLint "glGetUniformLocation"))
+(define glGetVertexAttribfv (c-lambda (GLuint GLenum GLfloat*) void "glGetVertexAttribfv"))
+(define glGetVertexAttribiv (c-lambda (GLuint GLenum GLint*) void "glGetVertexAttribiv"))
+(define glGetVertexAttribPointerv (c-lambda (GLuint GLenum GLvoid**) void "glGetVertexAttribPointerv"))
+(define glHint (c-lambda (GLenum GLenum) void "glHint"))
+(define glIsBuffer (c-lambda (GLuint) GLboolean "glIsBuffer"))
+(define glIsEnabled (c-lambda (GLenum) GLboolean "glIsEnabled"))
+(define glIsFramebuffer (c-lambda (GLuint) GLboolean "glIsFramebuffer"))
+(define glIsProgram (c-lambda (GLuint) GLboolean "glIsProgram"))
+(define glIsRenderbuffer (c-lambda (GLuint) GLboolean "glIsRenderbuffer"))
+(define glIsShader (c-lambda (GLuint) GLboolean "glIsShader"))
+(define glIsTexture (c-lambda (GLuint) GLboolean "glIsTexture"))
+(define glLineWidth (c-lambda (GLfloat) void "glLineWidth"))
+(define glLinkProgram (c-lambda (GLuint) void "glLinkProgram"))
+(define glLoadIdentity (c-lambda () void "glLoadIdentity"))
+(define glMatrixMode (c-lambda (GLenum) void "glMatrixMode"))
+(define glOrtho (c-lambda (GLdouble GLdouble GLdouble GLdouble GLdouble GLdouble) void           "glOrtho"))
+(define glPopMatrix (c-lambda () void "glPopMatrix"))
+(define glPushMatrix (c-lambda () void "glPushMatrix"))
+(define glSamplerParameterf (c-lambda (GLuint GLenum GLfloat) void "glSamplerParameterf"))
+(define glSamplerParameteri (c-lambda (GLuint GLenum GLint) void "glSamplerParameteri"))
+(define glPixelStorei (c-lambda (GLenum GLint) void "glPixelStorei"))
+(define glPolygonOffset (c-lambda (GLfloat GLfloat) void "glPolygonOffset"))
+(define glReadPixels (c-lambda (GLint GLint GLsizei GLsizei GLenum GLenum GLvoid*) void "glReadPixels"))
+(define glReleaseShaderCompiler (c-lambda () void "glReleaseShaderCompiler"))
+(define glRenderbufferStorage (c-lambda (GLenum GLenum GLsizei GLsizei) void "glRenderbufferStorage"))
+(define glSampleCoverage (c-lambda (GLclampf GLboolean) void "glSampleCoverage"))
+(define glScissor (c-lambda (GLint GLint GLsizei GLsizei) void "glScissor"))
+(define glShaderBinary (c-lambda (GLsizei GLuint* GLenum GLvoid* GLsizei) void "glShaderBinary"))
+(define glShaderSource (c-lambda (GLuint GLsizei GLchar** GLint*) void "glShaderSource"))
+(define glStencilFunc (c-lambda (GLenum GLint GLuint) void "glStencilFunc"))
+(define glStencilFuncSeparate (c-lambda (GLenum GLenum GLint GLuint) void "glStencilFuncSeparate"))
+(define glStencilMask (c-lambda (GLuint) void "glStencilMask"))
+(define glStencilMaskSeparate (c-lambda (GLenum GLuint) void "glStencilMaskSeparate"))
+(define glStencilOp (c-lambda (GLenum GLenum GLenum) void "glStencilOp"))
+(define glStencilOpSeparate (c-lambda (GLenum GLenum GLenum GLenum) void "glStencilOpSeparate"))
+(define glTexCoordPointer (c-lambda (GLint GLenum GLsizei GLvoid*) void "glTexCoordPointer"))
+(define glTexImage2D (c-lambda (GLenum GLint GLint GLsizei GLsizei GLint GLenum GLenum GLvoid*) void "glTexImage2D"))
+(define glTexParameteri (c-lambda (GLenum GLenum GLint) void "glTexParameteri"))
+(define glTexParameterf (c-lambda (GLenum GLenum GLfloat) void "glTexParameterf"))
+(define glTexParameterfv (c-lambda (GLenum GLenum GLfloat*) void "glTexParameterfv"))
+(define glTexParameteri (c-lambda (GLenum GLenum GLint) void "glTexParameteri"))
+(define glTexParameteriv (c-lambda (GLenum GLenum GLint*) void "glTexParameteriv"))
+(define glTexSubImage2D (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLenum GLvoid*) void "glTexSubImage2D"))
+(define glUniform1f (c-lambda (GLint GLfloat) void "glUniform1f"))
+(define glUniform1fv (c-lambda (GLint GLsizei GLfloat*) void "glUniform1fv"))
+(define glUniform1i (c-lambda (GLint GLint) void "glUniform1i"))
+(define glUniform1iv (c-lambda (GLint GLsizei GLint*) void "glUniform1iv"))
+(define glUniform2f (c-lambda (GLint GLfloat GLfloat) void "glUniform2f"))
+(define glUniform2fv (c-lambda (GLint GLsizei GLfloat*) void "glUniform2fv"))
+(define glUniform2i (c-lambda (GLint GLint GLint) void "glUniform2i"))
+(define glUniform2iv (c-lambda (GLint GLsizei GLint*) void "glUniform2iv"))
+(define glUniform3f (c-lambda (GLint GLfloat GLfloat GLfloat) void "glUniform3f"))
+(define glUniform3fv (c-lambda (GLint GLsizei GLfloat*) void "glUniform3fv"))
+(define glUniform3i (c-lambda (GLint GLint GLint GLint) void "glUniform3i"))
+(define glUniform3iv (c-lambda (GLint GLsizei GLint*) void "glUniform3iv"))
+(define glUniform4f (c-lambda (GLint GLfloat GLfloat GLfloat GLfloat) void "glUniform4f"))
+(define glUniform4fv (c-lambda (GLint GLsizei GLfloat*) void "glUniform4fv"))
+(define glUniform4i (c-lambda (GLint GLint GLint GLint GLint) void "glUniform4i"))
+(define glUniform4iv (c-lambda (GLint GLsizei GLint*) void "glUniform4iv"))
+(define glUniformMatrix2fv (c-lambda (GLint GLsizei GLboolean GLfloat*) void "glUniformMatrix2fv"))
+(define glUniformMatrix3fv (c-lambda (GLint GLsizei GLboolean GLfloat*) void "glUniformMatrix3fv"))
+(define glUniformMatrix4fv (c-lambda (GLint GLsizei GLboolean GLfloat*) void "glUniformMatrix4fv"))
+(define glUseProgram (c-lambda (GLuint) void "glUseProgram"))
+(define glValidateProgram (c-lambda (GLuint) void "glValidateProgram"))
+(define glVertexAttrib1f (c-lambda (GLuint GLfloat) void "glVertexAttrib1f"))
+(define glVertexAttrib1fv (c-lambda (GLuint GLfloat*) void "glVertexAttrib1fv"))
+(define glVertexAttrib2f (c-lambda (GLuint GLfloat GLfloat) void "glVertexAttrib2f"))
+(define glVertexAttrib2fv (c-lambda (GLuint GLfloat*) void "glVertexAttrib2fv"))
+(define glVertexAttrib3f (c-lambda (GLuint GLfloat GLfloat GLfloat) void "glVertexAttrib3f"))
+(define glVertexAttrib3fv (c-lambda (GLuint GLfloat*) void "glVertexAttrib3fv"))
+(define glVertexAttrib4f (c-lambda (GLuint GLfloat GLfloat GLfloat GLfloat) void "glVertexAttrib4f"))
+(define glVertexAttrib4fv (c-lambda (GLuint GLfloat*) void "glVertexAttrib4fv"))
+(define glVertexPointer (c-lambda (GLint GLenum GLsizei GLvoid*) void "glVertexPointer"))
+(define glVertexAttribPointer (c-lambda (GLuint GLint GLenum GLboolean GLsizei GLvoid*) void "glVertexAttribPointer"))
+(define glViewport (c-lambda (GLint GLint GLsizei GLsizei) void "glViewport"))
 
 ;; OpenGL 2
-(define glTexCoordPointer
-  (c-lambda (GLint GLenum GLsizei GLvoid*) void "glTexCoordPointer"))
+(define glBindSampler (c-lambda (GLuint GLuint) void "glBindSampler"))
 
-(define glTexSubImage2D
-  (c-lambda (GLenum GLint GLint GLint GLsizei GLsizei GLenum GLenum GLvoid*) void "glTexSubImage2D"))
+(define glBegin (c-lambda (GLenum) void "glBegin"))
+(define glBlendFunc (c-lambda (GLenum GLenum) void "glBlendFunc"))
+(define glBindTexture (c-lambda (GLenum GLuint) void "glBindTexture"))
 
-(define glUseProgram
-  (c-lambda (GLuint) void "glUseProgram"))
+(define glBindVertexArray (c-lambda (GLuint) void "glBindVertexArray"))
 
-(define glUniform1i
-  (c-lambda (GLint GLint) void "glUniform1i"))
+(define glColor3f (c-lambda (GLfloat GLfloat GLfloat) void "glColor3f"))
 
-(define glUniformMatrix4fv
-  (c-lambda (GLint GLsizei GLboolean GLfloat*) void "glUniformMatrix4fv"))
-
-(define glVertex3f
-  (c-lambda (GLfloat GLfloat GLfloat) void "glVertex3f"))
-
-;; OpenGL 2
-(define glVertexPointer
-  (c-lambda (GLint GLenum GLsizei GLvoid*) void "glVertexPointer"))
-
-(define glVertexAttribPointer
-  (c-lambda (GLuint GLint GLenum GLboolean GLsizei GLvoid*) void "glVertexAttribPointer"))
-
-(define glViewport
-  (c-lambda (GLint GLint GLsizei GLsizei) void "glViewport"))
+(define glVertex3f (c-lambda (GLfloat GLfloat GLfloat) void "glVertex3f"))
