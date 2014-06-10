@@ -1,7 +1,8 @@
 ;; Incomplete
 
 (c-declare "#include \"glew.h\"")
-(c-declare "#include \"gl.h\"")
+
+
 
 (c-define-type GLbitfield unsigned-int)
 (c-define-type GLvoid void)

@@ -2,6 +2,9 @@
 (define gl-modules '(gl))
 
 (define-task compile ()
+  ;; This fixes and issue in OSX: pkg-config not finding Gl
+  (if (eq? (sake#host-platform) 'osx)
+      (setenv "PKG_CONFIG_PATH" "/opt/X11/lib/pkgconfig/"))
   ;; GL ES
   (for-each (lambda (m)
               (sake#compile-to-c m)
