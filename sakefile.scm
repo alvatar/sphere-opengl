@@ -2,7 +2,7 @@
 (define gl-modules '(gl))
 
 (define-task compile ()
-  ;; This fixes and issue in OSX: pkg-config not finding Gl
+    ;; This fixes and issue in OSX: pkg-config not finding Gl
   (if (eq? (sake#host-platform) 'osx)
       (setenv "PKG_CONFIG_PATH" "/opt/X11/lib/pkgconfig/"))
   ;; GL ES
@@ -12,8 +12,20 @@
             gl-es-modules)
   ;; GL
   (for-each (lambda (m)
-              (sake#compile-module m compiler-options: '(debug))
-              (sake#compile-module m))
+              (if #f
+                  ;; Use compatibility profile in OSX at the moment
+                  ;;(eq? (sake#host-platform) 'osx)
+                  (begin
+                    ;; Overriding these options links against Apple's OpenGL, otherwise against Mesa
+                    (sake#compile-module m compiler-options: '(debug)
+                                         override-ld-options: "-framework OpenGL -lGLEW"
+                                         override-cc-options: "-I/System/Library/Frameworks/OpenGL.framework/Headers/")
+                    (sake#compile-module m
+                                         override-ld-options: "-framework OpenGL -lGLEW"
+                                         override-cc-options: "-I/System/Library/Frameworks/OpenGL.framework/Headers/"))
+                  (begin
+                    (sake#compile-module m compiler-options: '(debug))
+                    (sake#compile-module m))))
             gl-modules))
 
 (define-task post-compile ()

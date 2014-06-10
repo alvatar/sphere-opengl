@@ -1,7 +1,12 @@
 ;; Incomplete
 
-(c-declare "#include \"glew.h\"")
+;; for GL 3.x+
+;; /* If using gl3.h */
+;; /* Ensure we are using opengl's core profile only */
+;; #define GL3_PROTOTYPES 1
+;; #include <OpenGL/gl3.h>
 
+(c-declare "#include \"glew.h\"")
 
 
 (c-define-type GLbitfield unsigned-int)
