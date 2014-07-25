@@ -1,6 +1,24 @@
 ;; Incomplete API
 
-(c-declare "#include \"GLES/gl.h\"")
+(c-declare #<<end-of-c-declare
+#ifdef __APPLE__
+  #include <OpenGLES/ES/gl.h>
+  #include <OpenGLES/ES/glext.h>
+  #if TARGET_IPHONE_SIMULATOR
+    // iOS Simulator
+  #elif TARGET_OS_IPHONE
+    // iOS device
+  #elif TARGET_OS_MAC
+    // Other kinds of Mac OS
+  #else
+    // Unsupported platform
+  #endif
+#elif __linux
+    #include "GLES/gl.h"
+    // linux
+#endif
+end-of-c-declare
+)
 
 (c-define-type GLenum unsigned-int)
 (c-define-type GLboolean bool)

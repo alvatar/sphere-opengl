@@ -1,4 +1,22 @@
-(c-declare "#include \"GLES2/gl2.h\"")
+(c-declare #<<end-of-c-declare
+#ifdef __APPLE__
+  #include <OpenGLES/ES2/gl.h>
+  #include <OpenGLES/ES2/glext.h>
+  #if TARGET_IPHONE_SIMULATOR
+    // iOS Simulator
+  #elif TARGET_OS_IPHONE
+    // iOS device
+  #elif TARGET_OS_MAC
+    // Other kinds of Mac OS
+  #else
+    // Unsupported platform
+  #endif
+#elif __linux
+    #include "GLES2/gl2.h"
+    // linux
+#endif
+end-of-c-declare
+)
 
 ;;------------------------------------------------------------------------------
 ;;!! Types, pointers, arrays
@@ -262,6 +280,7 @@
  GL_RGBA
  GL_LUMINANCE
  GL_LUMINANCE_ALPHA
+ GL_BGRA_EXT ;; Extension
 
  ;; PixelType
  GL_UNSIGNED_SHORT_4_4_4_4
@@ -439,7 +458,6 @@
  GL_RGB5_A1
  GL_RGB565
  GL_DEPTH_COMPONENT16
- GL_STENCIL_INDEX
  GL_STENCIL_INDEX8
 
  GL_RENDERBUFFER_WIDTH
@@ -622,6 +640,9 @@
 (define glVertexAttrib4fv (c-lambda (GLuint GLfloat*) void "glVertexAttrib4fv"))
 (define glVertexAttribPointer (c-lambda (GLuint GLint GLenum GLboolean GLsizei GLvoid*) void "glVertexAttribPointer"))
 (define glViewport (c-lambda (GLint GLint GLsizei GLsizei) void "glViewport"))
+
+;;------------------------------------------------------------------------------
+;;!! Extra procedures
 
 ;; Defined in terms of vector-based matrices. No checks are performed
 (define (matrix->GLfloat* mat)
