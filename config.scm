@@ -25,7 +25,7 @@
         (pkg-config--cflags "gl glew") "-w")))
      (ld-options
       (cond-expand
-       (osx (pkg-config--libs "glew") "-L/usr/X11/lib/" "-lGL" "-w")
+       (osx (pkg-config--libs "glew") "-framework OpenGL" "-w")
        (else
         (pkg-config--libs "gl glew") "-w")))
      (include
