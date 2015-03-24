@@ -6,7 +6,17 @@
 ;; #define GL3_PROTOTYPES 1
 ;; #include <OpenGL/gl3.h>
 
-(c-declare "#include \"glew.h\"")
+
+(include (spheres/gambit/ffi ffi-simple))
+(include (spheres/gambit/ffi types))
+
+(c-declare #<<end-of-c-declare
+
+#include "stdlib.h"
+#include "glew.h"
+
+end-of-c-declare
+)
 
 
 (c-define-type GLbitfield unsigned-int)
