@@ -1,3 +1,5 @@
+(include "~~lib/ssrun/tasks/core.scm")
+
 (define libraries
   `(((spheres/opengl gl)
      .
