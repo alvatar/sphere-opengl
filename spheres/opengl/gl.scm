@@ -6,14 +6,14 @@
 ;; #define GL3_PROTOTYPES 1
 ;; #include <OpenGL/gl3.h>
 
-
-(include (spheres/gambit/ffi ffi-simple))
-(include (spheres/gambit/ffi types))
+(include (spheres/gambit/ffi c-define-base-macros#))
+(include (spheres/gambit/ffi c-define-type#))
+(include (spheres/gambit/ffi types#))
 
 (c-declare #<<end-of-c-declare
 
 #include "stdlib.h"
-#include "glew.h"
+#include "GL/glew.h"
 
 end-of-c-declare
 )
